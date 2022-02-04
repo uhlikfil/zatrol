@@ -2,7 +2,7 @@ import argparse
 
 import dotenv
 
-from db_update.config import Config
+from zatrol.config import Config
 
 
 def load_env(filename: str):
