@@ -20,6 +20,7 @@ class Server:
 @dataclass(frozen=True)
 class RiotAPI:
     api_key: str
+    champ_fetch_interval_h: int
 
 
 class Config:
@@ -36,7 +37,9 @@ class Config:
                 os.getenv("DATABASE"),
             )
             cls.server = Server(os.getenv("SERVER_PORT"))
-            cls.riot_api = RiotAPI(os.getenv("RIOT_API_KEY"))
+            cls.riot_api = RiotAPI(
+                os.getenv("RIOT_API_KEY"), os.getenv("CHAMP_FETCH_INTERVAL_H")
+            )
         except ValueError as error:
             raise ConfigLoadError(f"Error while loading configuration\n{error}")
 

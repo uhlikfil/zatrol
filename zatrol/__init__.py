@@ -1,9 +1,10 @@
 import logging
 import sys
 
+from zatrol.api import riot_api
 from zatrol.config import Config
 from zatrol.database import connection_manager
-from zatrol.services import champ_list_service
+from zatrol.services import champ_list as champ_list_svc
 
 
 def init_logger(name: str, level=logging.WARN) -> None:
@@ -25,15 +26,16 @@ def init() -> None:
         init_logger("sqlalchemy.engine", logging.WARN)
         init_logger(__package__, logging.DEBUG)
         Config.load_env()
+        riot_api.init()
         connection_manager.init()
-        champ_list_service.register()
+        champ_list_svc.register()
     except Exception as error:
         print(error, file=sys.stderr)
         sys.exit(1)
 
 
 def wsgi():
-    # from zatrol.server import app
+    from zatrol.server import create_app
 
     init()
-    # return app
+    return create_app()

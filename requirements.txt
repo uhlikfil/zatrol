@@ -3,3 +3,4 @@ psycopg2-binary
 pydantic
 pillow
 riotwatcher
+flask

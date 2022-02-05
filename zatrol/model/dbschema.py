@@ -7,22 +7,17 @@ Base = declarative_base()
 metadata: MetaData = Base.metadata
 
 
-class Champion(Base):
-    __tablename__ = "champion"
-    name = Column(String, primary_key=True)
-
-
 class Quote(Base):
     __tablename__ = "quote"
     text = Column(String, primary_key=True)
     champ_restrictions = Column(ARRAY(String))
 
 
-class Score(Base):
-    __tablename__ = "score"
+class Game(Base):
+    __tablename__ = "game"
     id = Column(Integer, primary_key=True, autoincrement=True)
     img_data = Column(BYTEA)
-    champion = Column(String, ForeignKey(Champion.name), index=True)
+    champion = Column(String, index=True)
 
 
 class Background(Base):

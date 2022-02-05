@@ -2,6 +2,8 @@ import argparse
 
 import dotenv
 
+from zatrol.config import Config
+
 
 def load_env(filename: str):
     filepath = dotenv.find_dotenv(filename)
@@ -20,19 +22,16 @@ def init_env(filenames: list[str]):
 
 
 def run_as_server():
-    from . import init
+    from . import wsgi
 
-    init()
-    while True:
-        a = input()
-        print("you said " + a)
+    app = wsgi()
+    app.run(port=Config.server.port)
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(prog="db_update")
     parser.add_argument(
-        "--env",
-        "-e",
+        "env",
         action="store",
         default=[],
         nargs="*",
