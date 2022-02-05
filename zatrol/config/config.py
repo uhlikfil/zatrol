@@ -17,6 +17,11 @@ class Server:
     port: int
 
 
+@dataclass(frozen=True)
+class RiotAPI:
+    api_key: str
+
+
 class Config:
     """a class holding the app configuration - is loaded from environmental variables"""
 
@@ -31,6 +36,7 @@ class Config:
                 os.getenv("DATABASE"),
             )
             cls.server = Server(os.getenv("SERVER_PORT"))
+            cls.riot_api = RiotAPI(os.getenv("RIOT_API_KEY"))
         except ValueError as error:
             raise ConfigLoadError(f"Error while loading configuration\n{error}")
 

@@ -2,8 +2,6 @@ import argparse
 
 import dotenv
 
-from zatrol.config import Config
-
 
 def load_env(filename: str):
     filepath = dotenv.find_dotenv(filename)
@@ -22,12 +20,12 @@ def init_env(filenames: list[str]):
 
 
 def run_as_server():
-    from db_update.server import app
-
     from . import init
 
     init()
-    app.run(port=Config.server.port)
+    while True:
+        a = input()
+        print("you said " + a)
 
 
 if __name__ == "__main__":

@@ -1,3 +1,4 @@
+import io
 import random
 
 from PIL import Image, ImageDraw, ImageFont
@@ -59,5 +60,7 @@ def _get_center(coords: tuple[int, int], size: tuple[int, int]) -> tuple[int, in
 
 
 if __name__ == "__main__":
-    img = generate("co s tim mam delat", "score/1.png", "bg/summ_rift.jpg")
-    img.save("test.png")
+    with open("score/1.png", "rb") as score_f:
+        score_data = score_f.read()
+        img = generate("co s tim mam delat", io.BytesIO(score_data), "bg/summ_rift.jpg")
+        img.save("test.png")

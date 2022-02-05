@@ -3,6 +3,7 @@ import sys
 
 from zatrol.config import Config
 from zatrol.database import connection_manager
+from zatrol.services import champ_list_service
 
 
 def init_logger(name: str, level=logging.WARN) -> None:
@@ -25,6 +26,7 @@ def init() -> None:
         init_logger(__package__, logging.DEBUG)
         Config.load_env()
         connection_manager.init()
+        champ_list_service.register()
     except Exception as error:
         print(error, file=sys.stderr)
         sys.exit(1)

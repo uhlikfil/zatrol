@@ -3,6 +3,7 @@ from sqlalchemy.engine import Engine
 from sqlalchemy.orm import Session, sessionmaker
 
 from zatrol.config import Config
+from zatrol.model.dbschema import metadata
 
 engine: Engine = None
 session_mkr: Session = None
