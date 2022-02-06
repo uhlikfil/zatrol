@@ -9,17 +9,20 @@ blueprint = Blueprint("quote", __name__, url_prefix="/api/quote")
 
 @blueprint.get("")
 def get():
-    resp = quotes_svc.get_random_quote()
+    result = quotes_svc.get_random_quote()
+    if not result:
+        return None
+    resp = {"text": result.text, "champ_restrictions": result.champ_restrictions}
     return jsonify(resp), HTTPStatus.OK
 
 
 @blueprint.post("")
 def post():
     body = request.json
-    if not body or not body["text"] or not body["champ_restrictions"]:
+    if not body or not body["text"]:
         abort(HTTPStatus.BAD_REQUEST, description="Invalid json body")
     try:
-        resp = quotes_svc.insert_quote(body["text"], body["champs"])
-        return jsonify(resp), HTTPStatus.OK
+        quotes_svc.insert_quote(body["text"], body.get("champ_restrictions", []))
+        return "", HTTPStatus.NO_CONTENT
     except ValueError as err:
         abort(HTTPStatus.UNPROCESSABLE_ENTITY, description=str(err))

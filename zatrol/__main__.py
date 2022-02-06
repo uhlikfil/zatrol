@@ -28,6 +28,12 @@ def run_as_server():
     app.run(port=Config.server.port)
 
 
+def run_interactive():
+    from . import init
+
+    init()
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(prog="db_update")
     parser.add_argument(
@@ -37,7 +43,16 @@ if __name__ == "__main__":
         nargs="*",
         help="additional .env file names to load, values will be overriden in the specified order",
     )
+    parser.add_argument(
+        "-it",
+        "--interactive",
+        action="store_true",
+        help="initialize everything but don't run the server",
+    )
     args = parser.parse_args()
 
     init_env(args.env)
-    run_as_server()
+    if args.interactive:
+        run_interactive()
+    else:
+        run_as_server()

@@ -1,5 +1,4 @@
-# coding: utf-8
-from sqlalchemy import Column, ForeignKey, Integer, MetaData, String
+from sqlalchemy import Column, Integer, MetaData, String
 from sqlalchemy.dialects.postgresql import ARRAY, BYTEA
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -9,7 +8,8 @@ metadata: MetaData = Base.metadata
 
 class Quote(Base):
     __tablename__ = "quote"
-    text = Column(String, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    text = Column(String, unique=True)
     champ_restrictions = Column(ARRAY(String))
 
 

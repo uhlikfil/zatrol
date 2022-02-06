@@ -3,26 +3,25 @@ import random
 
 from PIL import Image, ImageDraw, ImageFont
 
-BORDER = 50
-TEXT_CENTER_REPEAT = 20
+from zatrol.config import Config
 
 
-def generate(text: str, score, background):
-    bg_img = Image.open(background)
+def generate(text: str, score: bytes, background: bytes):
+    bg_img = Image.open(io.BytesIO(background))
     draw = ImageDraw.Draw(bg_img)
     bg_w, bg_h = bg_img.size
     bg_h_half = bg_h // 2
     # text
-    font = ImageFont.truetype("fonts/SaucerBB.ttf", 50)
+    font = ImageFont.truetype(f"{Config.img_gen.font_dir}/SaucerBB.ttf", 50)
     t_size = font.getsize(text)
     t_coords = _get_rand_pos(*t_size, bg_w, bg_h_half)
-    while abs(t_coords[1] - bg_h_half // 2) < TEXT_CENTER_REPEAT:
+    while abs(t_coords[1] - bg_h_half // 2) < Config.img_gen.center:
         t_coords = _get_rand_pos(*t_size, bg_w, bg_h_half)  # too close to y center
     # lost LP
     lp_coords = _mirror(t_coords, t_size, (bg_w, bg_h_half))
     lp_loss = random.randint(12, 20)
     # score image
-    score_img = Image.open(score).resize((bg_w // 2, bg_h_half // 2))
+    score_img = Image.open(io.BytesIO(score)).resize((bg_w // 2, bg_h_half // 2))
     img_x, img_y = _get_rand_pos(*score_img.size, bg_w, bg_h_half)
     img_y += bg_h_half
     # draw it
@@ -33,6 +32,7 @@ def generate(text: str, score, background):
 
 
 def _get_rand_pos(obj_w: int, obj_h: int, bg_w: int, bg_h: int) -> tuple[int, int]:
+    BORDER = Config.img_gen.border
     max_x = bg_w - BORDER - obj_w
     x = random.randint(BORDER, max_x)
     max_y = bg_h - BORDER - obj_h

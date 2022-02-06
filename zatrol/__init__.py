@@ -4,7 +4,7 @@ import sys
 from zatrol.api import riot_api
 from zatrol.config import Config
 from zatrol.database import connection_manager
-from zatrol.services import champ_list as champ_list_svc
+from zatrol.services import champions as champ_list_svc
 
 
 def init_logger(name: str, level=logging.WARN) -> None:

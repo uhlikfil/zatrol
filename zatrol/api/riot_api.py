@@ -1,3 +1,4 @@
+import requests
 from riotwatcher import LolWatcher
 
 from zatrol.config import Config
@@ -10,8 +11,17 @@ def init() -> None:
     client = LolWatcher(Config.riot_api.api_key)
 
 
-def fetch_champions() -> list[str]:
-    versions = client.data_dragon.versions_for_region("eune")
-    champions_version = versions["n"]["champion"]
+def fetch_champions() -> dict:
+    champions_version = _version("champion")
     champ_list = client.data_dragon.champions(champions_version)
-    return list(champ_list["data"].keys())
+    return champ_list["data"]
+
+
+def get_champion_icon(key: int) -> bytes:
+    url = "https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-icons"
+    return requests.get(f"{url}/{key}.png").content
+
+
+def _version(type_: str) -> str:
+    versions = client.data_dragon.versions_for_region("eune")
+    return versions["n"][type_]
