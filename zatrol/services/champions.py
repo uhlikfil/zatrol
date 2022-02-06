@@ -15,7 +15,7 @@ def validate_champions(champ_names: list[str]) -> list[str]:
     for name in champ_names:
         valid_name = champions.get(name.lower())
         if valid_name:
-            valid_names.append(valid_name)["name"]
+            valid_names.append(valid_name["name"])
         else:
             invalid_names.append(name)
     if invalid_names:
@@ -30,9 +30,9 @@ def register() -> None:
 def _update_database() -> None:
     global champions
     logger.info("updating champion list in the database")
-    champs = riot_api.fetch_champions()
-    logger.info("got %s champions from Riot API", len(champs))
+    champs = riot_api.get_champions()
+    logger.info("got %d champions from Riot API", len(champs))
     champions = {name.lower(): data for name, data in champs.items()}
     interval_s = 60 * 60 * Config.riot_api.champ_fetch_interval_h
-    logger.info("will fetch again in %s seconds", interval_s)
+    logger.info("will fetch again in %d seconds", interval_s)
     threading.Timer(interval_s, _update_database).start()

@@ -25,7 +25,7 @@ def run_as_server():
     from . import wsgi
 
     app = wsgi()
-    app.run(port=Config.server.port)
+    app.run(port=Config.server.port, debug=True)
 
 
 def run_interactive():
