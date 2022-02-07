@@ -15,7 +15,7 @@ def get():
             "puuid": p.puuid,
             "region": p.region.name,
             "summoner_name": p.summoner_name,
-            "last_match_start_time": p.last_match_start_time,
+            "last_match": p.last_match,
         }
         for p in result
     ]

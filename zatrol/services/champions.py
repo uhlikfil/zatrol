@@ -1,8 +1,8 @@
-import threading
 from logging import getLogger
 
 from zatrol.api import riot_api
 from zatrol.config import Config
+from zatrol.utils import threading_utils
 
 logger = getLogger(f"{__package__}.{__name__}")
 
@@ -33,6 +33,5 @@ def _update_database() -> None:
     champs = riot_api.get_champions()
     logger.info("got %d champions from Riot API", len(champs))
     champions = {name.lower(): data for name, data in champs.items()}
-    interval_s = 60 * 60 * Config.riot_api.champ_fetch_interval_h
-    logger.info("will fetch again in %d seconds", interval_s)
-    threading.Timer(interval_s, _update_database).start()
+
+    threading_utils.schedule(_update_database, Config.riot_api.champions_interval_h)

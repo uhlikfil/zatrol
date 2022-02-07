@@ -9,7 +9,7 @@ engine: Engine = None
 session_mkr: Session = None
 
 
-def init():
+def init() -> None:
     global engine
     global session_mkr
 

@@ -14,15 +14,15 @@ class Player(Base):
     puuid = Column(String, primary_key=True)
     region = Column(ENUM(Region))
     summoner_name = Column(String)
-    last_match_start_time = Column(Integer)
+    last_match = Column(String)
 
 
 class Quote(Base):
     __tablename__ = "quote"
-    __table_args__ = (UniqueConstraint("player_puuid", "text"),)
+    __table_args__ = (UniqueConstraint("puuid", "text"),)
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    player_puuid = Column("player_puuid", String, ForeignKey(Player.puuid), index=True)
+    puuid = Column("puuid", String, ForeignKey(Player.puuid), index=True)
     text = Column("text", String)
     champ_restrictions = Column(ARRAY(String))
 
@@ -31,7 +31,7 @@ class Game(Base):
     __tablename__ = "game"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    player_puuid = Column(String, ForeignKey(Player.puuid), index=True)
+    puuid = Column(String, ForeignKey(Player.puuid), index=True)
     img_data = Column(BYTEA)
     champion = Column(String, index=True)
 

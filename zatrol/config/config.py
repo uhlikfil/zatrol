@@ -20,8 +20,8 @@ class Server:
 @dataclass(frozen=True)
 class RiotAPI:
     api_key: str
-    champ_fetch_interval_h: int
-    match_history_check_interval_h: int
+    champions_interval_h: int
+    match_history_interval_h: int
 
 
 @dataclass(frozen=True)
@@ -47,8 +47,8 @@ class Config:
             cls.server = Server(os.getenv("SERVER_PORT"))
             cls.riot_api = RiotAPI(
                 os.getenv("RIOT_API_KEY"),
-                os.getenv("CHAMP_FETCH_INTERVAL_H"),
-                os.getenv("MATCH_HISTORY_CHECK_INTERVAL_H"),
+                os.getenv("CHAMPIONS_INTERVAL_H"),
+                os.getenv("MATCH_HISTORY_INTERVAL_H"),
             )
             cls.img_gen = ImgGen(
                 os.getenv("BORDER"),

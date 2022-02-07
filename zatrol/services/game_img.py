@@ -8,9 +8,9 @@ from zatrol.config import Config
 
 
 def create_img(
-    champ_key: int, kills: int, deaths: int, assists: int, won: bool
+    champ_id: int, kills: int, deaths: int, assists: int, won: bool
 ) -> bytes:
-    champ_icon = Image.open(io.BytesIO(riot_api.get_champion_icon(champ_key)))
+    champ_icon = Image.open(io.BytesIO(riot_api.get_champion_icon(champ_id)))
     bg_w, bg_h, border_size = _bg_size(champ_icon)
     bg_img = Image.new("RGB", (bg_w, bg_h), color="#272a30")
     bg_img.paste(champ_icon, (border_size, border_size))
@@ -46,10 +46,7 @@ def _bg_size(img: Image) -> tuple[int, int, int]:
     return bg_w, bg_h, border_size
 
 
-def _font(
-    font_name: str,
-    wanted_height: int,
-) -> FreeTypeFont:
+def _font(font_name: str, wanted_height: int) -> FreeTypeFont:
     for i in range(1, 256):
         font = ImageFont.truetype(f"{Config.img_gen.font_dir}/{font_name}", i)
         height = font.getsize("Test string 123/45")[1]

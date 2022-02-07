@@ -1,7 +1,7 @@
 from flask import Flask
 
 
-def create_app():
+def create_app() -> Flask:
     app = Flask(__name__.split(".")[0])
 
     _register_err_handlers(app)

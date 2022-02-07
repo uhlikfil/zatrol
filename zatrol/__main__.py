@@ -5,7 +5,7 @@ import dotenv
 from zatrol.config import Config
 
 
-def load_env(filename: str):
+def load_env(filename: str) -> None:
     filepath = dotenv.find_dotenv(filename)
     if not filepath:
         print(f"Couldn't find .env file {filename!r}")
@@ -14,21 +14,21 @@ def load_env(filename: str):
     dotenv.load_dotenv(filepath, override=True)
 
 
-def init_env(filenames: list[str]):
+def init_env(filenames: list[str]) -> None:
     env_files = ["00-prod.env"]
     env_files.extend(filenames)
     for file in env_files:
         load_env(file)
 
 
-def run_as_server():
+def run_as_server() -> None:
     from . import wsgi
 
     app = wsgi()
-    app.run(port=Config.server.port, debug=True)
+    app.run(port=Config.server.port)
 
 
-def run_interactive():
+def run_interactive() -> None:
     from . import init
 
     init()
