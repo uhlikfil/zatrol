@@ -1,11 +1,11 @@
 [
   {
-    "text": "omg, maji 6 assassinu",
+    "text": "omg, maji 6 assassínů",
     "puuid": "qqojgTduHQRk8MGNHA36C0j-Et7aBr-5UTPNC7aQ2JGDkKh99byZ-6fucFqYSmrdqCG3OMRRX6ZWDw",
     "champ_restrictions": []
   },
   {
-    "text": "no, co s tim mam delat",
+    "text": "no, co s tim mam dělat",
     "puuid": "qqojgTduHQRk8MGNHA36C0j-Et7aBr-5UTPNC7aQ2JGDkKh99byZ-6fucFqYSmrdqCG3OMRRX6ZWDw",
     "champ_restrictions": []
   },
@@ -24,8 +24,11 @@
     ]
   },
   {
-    "text": "proc jste mi nerekli, ze ma ignite a ne TP?",
+    "text": "proč jste mi neřekli, že má ignite a ne TP?",
     "puuid": "-pnagUK3HkuozlnLJgw_UXexQ3zxqT-nhZ0z0SDexk7keLPYkx1zrHXqgznQkNnxJlxwO2csmneamA",
-    "champ_restrictions": []
+    "champ_restrictions": [
+      "shen",
+      "sion"
+    ]
   }
 ]

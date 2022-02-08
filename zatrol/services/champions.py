@@ -34,4 +34,5 @@ def _update_database() -> None:
     logger.info("got %d champions from Riot API", len(champs))
     champions = {name.lower(): data for name, data in champs.items()}
 
-    threading_utils.schedule(_update_database, Config.riot_api.champions_interval_h)
+    schedule_minutes = Config.riot_api.champions_interval_h
+    threading_utils.schedule(schedule_minutes, _update_database)

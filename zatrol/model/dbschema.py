@@ -1,5 +1,13 @@
-from sqlalchemy import Column, ForeignKey, Integer, MetaData, String, UniqueConstraint
-from sqlalchemy.dialects.postgresql import ARRAY, BYTEA, ENUM
+from sqlalchemy import (
+    Column,
+    ForeignKey,
+    Integer,
+    LargeBinary,
+    MetaData,
+    String,
+    UniqueConstraint,
+)
+from sqlalchemy.dialects.postgresql import ARRAY, ENUM
 from sqlalchemy.ext.declarative import declarative_base
 
 from zatrol.model.region import Region
@@ -22,7 +30,7 @@ class Quote(Base):
     __table_args__ = (UniqueConstraint("puuid", "text"),)
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    puuid = Column("puuid", String, ForeignKey(Player.puuid), index=True)
+    puuid = Column("puuid", String, ForeignKey(Player.puuid, ondelete="cascade"), index=True)  # fmt: skip
     text = Column("text", String)
     champ_restrictions = Column(ARRAY(String))
 
@@ -31,13 +39,6 @@ class Game(Base):
     __tablename__ = "game"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    puuid = Column(String, ForeignKey(Player.puuid), index=True)
-    img_data = Column(BYTEA)
+    puuid = Column(String, ForeignKey(Player.puuid, ondelete="cascade"), index=True)
+    img_data = Column(LargeBinary)
     champion = Column(String, index=True)
-
-
-class Background(Base):
-    __tablename__ = "background"
-
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    img_data = Column(BYTEA)

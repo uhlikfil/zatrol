@@ -47,8 +47,10 @@ def _bg_size(img: Image) -> tuple[int, int, int]:
 
 
 def _font(font_name: str, wanted_height: int) -> FreeTypeFont:
+    ASSETS = Config.img_gen.assets_dir
+
     for i in range(1, 256):
-        font = ImageFont.truetype(f"{Config.img_gen.font_dir}/{font_name}", i)
+        font = ImageFont.truetype(f"{ASSETS}/fonts/{font_name}", i)
         height = font.getsize("Test string 123/45")[1]
         if height == wanted_height:
             return font

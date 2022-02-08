@@ -1,9 +1,10 @@
 from sqlalchemy import select, update
 from sqlalchemy.dialects.postgresql import insert
+from sqlalchemy.engine import ResultProxy
 from sqlalchemy.orm import Session
 from sqlalchemy.sql.expression import func
 
-from zatrol.model.dbschema import Background, Game, Player, Quote
+from zatrol.model.dbschema import Game, Player, Quote
 from zatrol.model.region import Region
 
 
@@ -22,22 +23,20 @@ def insert_quote(session: Session, puuid: str, text: str, champs: list[str]) -> 
 
 
 def select_random_quote(session: Session, puuid: str) -> Quote:
-    stmt = select(Quote).where(Player.puuid == puuid)
+    stmt = select(Quote).where(Quote.puuid == puuid)
     stmt = stmt.order_by(func.random()).limit(1)
-    result = session.execute(stmt).scalar()
-    return result
-
-
-# backgrounds
-def insert_background(session: Session, file_contents: bytes) -> None:
-    stmt = insert(Background.img_data).values(file_contents)
-    session.execute(stmt)
+    return session.execute(stmt).scalar()
 
 
 # players
-def select_all_players(session: Session) -> list[Player]:
+def select_all_players(session: Session) -> ResultProxy:
     stmt = select(Player)
-    return list(session.execute(stmt).scalars())
+    return session.execute(stmt).scalars()
+
+
+def select_player(session: Session, puuid: str) -> Player:
+    stmt = select(Player).where(Player.puuid == puuid)
+    return session.execute(stmt).scalar()
 
 
 def insert_player(
@@ -72,3 +71,11 @@ def insert_game(session: Session, puuid: str, img_data: bytes, champion: str) ->
     }
     stmt = insert(Game).values(value)
     session.execute(stmt)
+
+
+def select_random_game(session: Session, puuid: str, champions: list[str]) -> Game:
+    stmt = select(Game).where(Game.puuid == puuid)
+    if champions:
+        stmt = stmt.where(Game.champion.in_(champions))
+    stmt = stmt.order_by(func.random()).limit(1)
+    return session.execute(stmt).scalar()

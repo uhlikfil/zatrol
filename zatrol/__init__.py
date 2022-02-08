@@ -5,6 +5,7 @@ from zatrol.api import riot_api
 from zatrol.config import Config
 from zatrol.database import connection_manager
 from zatrol.services import champions as champ_list_svc
+from zatrol.services import generate as generate_svc
 from zatrol.services import match_history as match_history_svc
 
 
@@ -29,6 +30,7 @@ def init() -> None:
         Config.load_env()
         riot_api.init()
         connection_manager.init()
+        generate_svc.init()
         champ_list_svc.register()
         match_history_svc.register()
     except Exception as error:

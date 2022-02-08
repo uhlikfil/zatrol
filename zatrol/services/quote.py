@@ -7,7 +7,7 @@ from zatrol.services import champions as champ_list_svc
 
 
 def insert_quote(puuid: str, text: str, champ_restrictions: list[str]) -> None:
-    if not 3 <= len(text) < 256:
+    if not 3 <= len(text) < 64:
         raise ValueError(f"Incorrect quote length {len(text)}")
     champions = champ_list_svc.validate_champions(champ_restrictions)
     try:
@@ -16,8 +16,3 @@ def insert_quote(puuid: str, text: str, champ_restrictions: list[str]) -> None:
             sess.commit()
     except:
         raise ValueError("Attempted to add quote to a unregistered player")
-
-
-def get_random_quote(puuid: str) -> Quote:
-    with cm.session_mkr() as sess:
-        return db_api.select_random_quote(sess, puuid)

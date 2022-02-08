@@ -26,9 +26,7 @@ class RiotAPI:
 
 @dataclass(frozen=True)
 class ImgGen:
-    border: int
-    center: int
-    font_dir: str
+    assets_dir: str
 
 
 class Config:
@@ -51,9 +49,7 @@ class Config:
                 os.getenv("MATCH_HISTORY_INTERVAL_H"),
             )
             cls.img_gen = ImgGen(
-                os.getenv("BORDER"),
-                os.getenv("CENTER"),
-                os.getenv("FONT_DIR"),
+                os.getenv("ASSETS_DIR"),
             )
         except ValueError as error:
             raise ConfigLoadError(f"Error while loading configuration\n{error}")
