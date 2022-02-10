@@ -36,9 +36,9 @@ def get_champions() -> dict:
     return champ_list["data"]
 
 
-def get_champion_icon(key: int) -> bytes:
-    url = "https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-icons"
-    return requests.get(f"{url}/{key}.png").content
+def get_champion_icon(champion_name: int) -> bytes:
+    url = "http://ddragon.leagueoflegends.com/cdn/12.3.1/img/champion"
+    return requests.get(f"{url}/{champion_name}.png").content
 
 
 def _version(type_: str) -> str:

@@ -1,9 +1,10 @@
 from flask import Flask
+from flask_cors import CORS
 
 
 def create_app() -> Flask:
     app = Flask(__name__.split(".")[0])
-
+    CORS(app)
     _register_err_handlers(app)
     _register_blueprints(app)
 

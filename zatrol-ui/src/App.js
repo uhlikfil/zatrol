@@ -1,26 +1,23 @@
-import "./App.css"
-import logo from "./logo.svg"
+import { QueryClient, QueryClientProvider } from "react-query"
+import Header from "./components/header/Header"
+import SummonerContextProvider from "./context/SummonerContext"
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      staleTime: 10,
+    },
+  },
+})
 
 function App() {
-  let something = 1
-
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <QueryClientProvider client={queryClient}>
+      <SummonerContextProvider>
+        <Header />
+      </SummonerContextProvider>
+    </QueryClientProvider>
   )
 }
 

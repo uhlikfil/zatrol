@@ -8,9 +8,9 @@ from zatrol.config import Config
 
 
 def create_img(
-    champ_id: int, kills: int, deaths: int, assists: int, won: bool
+    champ_name: int, kills: int, deaths: int, assists: int, won: bool
 ) -> bytes:
-    champ_icon = Image.open(io.BytesIO(riot_api.get_champion_icon(champ_id)))
+    champ_icon = Image.open(io.BytesIO(riot_api.get_champion_icon(champ_name)))
     bg_w, bg_h, border_size = _bg_size(champ_icon)
     bg_img = Image.new("RGB", (bg_w, bg_h), color="#272a30")
     bg_img.paste(champ_icon, (border_size, border_size))

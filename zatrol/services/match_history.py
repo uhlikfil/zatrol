@@ -55,7 +55,7 @@ def _process_match(session: Session, data: dict, puuid: str) -> None:
         return None
 
     img = game_img.create_img(
-        participant["championId"],
+        participant["championName"],
         kills,
         deaths,
         assists,

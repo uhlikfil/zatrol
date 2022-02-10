@@ -4,3 +4,4 @@ pydantic
 pillow
 riotwatcher
 flask
+flask-cors
