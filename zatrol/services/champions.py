@@ -24,15 +24,15 @@ def validate_champions(champ_names: list[str]) -> list[str]:
 
 
 def register() -> None:
-    _update_database()
+    _update_champions()
 
 
-def _update_database() -> None:
+def _update_champions() -> None:
     global champions
     logger.info("updating champion list in the database")
     champs = riot_api.get_champions()
     logger.info("got %d champions from Riot API", len(champs))
     champions = {name.lower(): data for name, data in champs.items()}
 
-    schedule_minutes = Config.riot_api.champions_interval_h
-    threading_utils.schedule(schedule_minutes, _update_database)
+    schedule_minutes = Config.riot_api.champions_interval_h * 60
+    threading_utils.schedule(schedule_minutes, _update_champions)

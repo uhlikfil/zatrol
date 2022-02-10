@@ -20,8 +20,9 @@ def _register_err_handlers(app: Flask) -> None:
 
 
 def _register_blueprints(app: Flask) -> None:
-    from zatrol.server import generate, player, quote
+    from zatrol.server import generate, quote, region, summoner
 
     app.register_blueprint(generate.blueprint)
-    app.register_blueprint(player.blueprint)
     app.register_blueprint(quote.blueprint)
+    app.register_blueprint(region.blueprint)
+    app.register_blueprint(summoner.blueprint)

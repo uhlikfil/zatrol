@@ -2,14 +2,14 @@ from http import HTTPStatus
 
 from flask import Blueprint, jsonify, request
 
-from zatrol.services import player as player_svc
+from zatrol.services import summoner as summoner_svc
 
-blueprint = Blueprint("player", __name__, url_prefix="/api/player")
+blueprint = Blueprint("summoner", __name__, url_prefix="/api/summoner")
 
 
 @blueprint.get("")
 def get():
-    result = player_svc.get_players()
+    result = summoner_svc.get_summoners()
     resp = [
         {
             "puuid": p.puuid,
@@ -27,5 +27,5 @@ def post():
     body = request.json
     if not body or "region" not in body or "summoner_name" not in body:
         raise KeyError
-    player_svc.insert_player(body["region"], body["summoner_name"])
+    summoner_svc.insert_summoner(body["region"], body["summoner_name"])
     return "", HTTPStatus.NO_CONTENT

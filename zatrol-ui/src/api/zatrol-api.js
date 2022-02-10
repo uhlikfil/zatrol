@@ -20,6 +20,10 @@ async function get(pathname, query) {
   return json
 }
 
-export async function getPlayers() {
-  return await get("/player")
+export async function getSummoners() {
+  return await get("/summoner")
+}
+
+export async function getRegions() {
+  return await get("/region")
 }

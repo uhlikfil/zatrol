@@ -15,4 +15,4 @@ def insert_quote(puuid: str, text: str, champ_restrictions: list[str]) -> None:
             db_api.insert_quote(sess, puuid, text, champions)
             sess.commit()
     except:
-        raise ValueError("Attempted to add quote to a unregistered player")
+        raise ValueError("Attempted to add quote to a unregistered summoner")

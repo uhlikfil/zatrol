@@ -4,7 +4,7 @@ from sqlalchemy.engine import ResultProxy
 from sqlalchemy.orm import Session
 from sqlalchemy.sql.expression import func
 
-from zatrol.model.dbschema import Game, Player, Quote
+from zatrol.model.dbschema import Game, Quote, Summoner
 from zatrol.model.region import Region
 
 
@@ -28,37 +28,37 @@ def select_random_quote(session: Session, puuid: str) -> Quote:
     return session.execute(stmt).scalar()
 
 
-# players
-def select_all_players(session: Session) -> ResultProxy:
-    stmt = select(Player)
+# summoners
+def select_all_summoners(session: Session) -> ResultProxy:
+    stmt = select(Summoner)
     return session.execute(stmt).scalars()
 
 
-def select_player(session: Session, puuid: str) -> Player:
-    stmt = select(Player).where(Player.puuid == puuid)
+def select_summoner(session: Session, puuid: str) -> Summoner:
+    stmt = select(Summoner).where(Summoner.puuid == puuid)
     return session.execute(stmt).scalar()
 
 
-def insert_player(
+def insert_summoner(
     session: Session,
     puuid: str,
     region: Region,
     summoner_name: str,
 ) -> None:
     value = {
-        Player.puuid: puuid,
-        Player.region: region,
-        Player.summoner_name: summoner_name,
+        Summoner.puuid: puuid,
+        Summoner.region: region,
+        Summoner.summoner_name: summoner_name,
     }
-    updatable = {Player.region: region, Player.summoner_name: summoner_name}
-    stmt = insert(Player).values(value)
-    stmt = stmt.on_conflict_do_update(index_elements=[Player.puuid], set_=updatable)
+    updatable = {Summoner.region: region, Summoner.summoner_name: summoner_name}
+    stmt = insert(Summoner).values(value)
+    stmt = stmt.on_conflict_do_update(index_elements=[Summoner.puuid], set_=updatable)
     session.execute(stmt)
 
 
-def update_player_last_match(session: Session, puuid: str, last_match: str) -> None:
-    value = {Player.last_match: last_match}
-    stmt = update(Player).where(Player.puuid == puuid).values(value)
+def update_summoner_last_match(session: Session, puuid: str, last_match: str) -> None:
+    value = {Summoner.last_match: last_match}
+    stmt = update(Summoner).where(Summoner.puuid == puuid).values(value)
     session.execute(stmt)
 
 

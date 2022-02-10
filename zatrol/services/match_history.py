@@ -7,7 +7,7 @@ from zatrol.api import riot_api
 from zatrol.config import Config
 from zatrol.database import connection_manager as cm
 from zatrol.database import db_api
-from zatrol.model.dbschema import Player
+from zatrol.model.dbschema import Summoner
 from zatrol.services.img_gen import game_img
 from zatrol.utils import threading_utils
 
@@ -15,33 +15,33 @@ logger = getLogger(f"{__package__}.{__name__}")
 
 
 def register() -> None:
-    threading.Thread(target=_check_players).start()
+    threading.Thread(target=_check_summoners).start()
 
 
-def _check_players() -> None:
-    logger.info("checking match history of all registered players")
+def _check_summoners() -> None:
+    logger.info("checking match history of all registered summoners")
     with cm.session_mkr() as sess:
-        players = db_api.select_all_players(sess)
-        logger.info("going to process history of all registered players")
-        for player in players:
-            process_player(sess, player)
+        summoners = db_api.select_all_summoners(sess)
+        logger.info("going to process history of all registered summoners")
+        for summoner in summoners:
+            process_summoner(sess, summoner)
         sess.commit()
 
     schedule_minutes = Config.riot_api.match_history_interval_h * 60
-    threading_utils.schedule(schedule_minutes, _check_players)
+    threading_utils.schedule(schedule_minutes, _check_summoners)
 
 
-def process_player(session: Session, player: Player) -> None:
-    match_ids = riot_api.get_matches(player.region, player.puuid)
-    if player.last_match:
-        match_ids = list(filter(lambda m_id: m_id > player.last_match, match_ids))
-    logger.info("found %d new matches for '%s'", len(match_ids), player.summoner_name)
+def process_summoner(session: Session, summoner: Summoner) -> None:
+    match_ids = riot_api.get_matches(summoner.region, summoner.puuid)
+    if summoner.last_match:
+        match_ids = list(filter(lambda m_id: m_id > summoner.last_match, match_ids))
+    logger.info("found %d new matches for '%s'", len(match_ids), summoner.summoner_name)
     if not match_ids:
         return
     for m_id in match_ids:
-        match_data = riot_api.get_match(player.region, m_id)["info"]
-        _process_match(session, match_data, player.puuid)
-    db_api.update_player_last_match(session, player.puuid, match_ids[0])
+        match_data = riot_api.get_match(summoner.region, m_id)["info"]
+        _process_match(session, match_data, summoner.puuid)
+    db_api.update_summoner_last_match(session, summoner.puuid, match_ids[0])
 
 
 def _process_match(session: Session, data: dict, puuid: str) -> None:

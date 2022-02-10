@@ -14,7 +14,7 @@ def get(puuid):
     with cm.session_mkr() as sess:
         result = db_api.select_random_quote(sess, puuid)
     if not result:
-        raise FileNotFoundError(f"No quotes for a player puuid '{puuid}'")
+        raise FileNotFoundError(f"No quotes for a summoner puuid '{puuid}'")
     resp = {"text": result.text, "champ_restrictions": result.champ_restrictions}
     return resp, HTTPStatus.OK
 

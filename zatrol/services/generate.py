@@ -24,21 +24,21 @@ def init():
 
 def generate(puuid: str) -> str:
     with cm.session_mkr() as sess:
-        player = db_api.select_player(sess, puuid)
+        summoner = db_api.select_summoner(sess, puuid)
         quote = db_api.select_random_quote(sess, puuid)
-        if not (player and quote):
-            raise FileNotFoundError(f"No quotes found for the player '{puuid}'")
+        if not (summoner and quote):
+            raise FileNotFoundError(f"No quotes found for the summoner '{puuid}'")
         game = db_api.select_random_game(sess, puuid, quote.champ_restrictions)
 
     if not game:
-        raise FileNotFoundError(f"The player '{player.summoner_name}' has no interesting games")  # fmt: skip
+        raise FileNotFoundError(f"The summoner '{summoner.summoner_name}' has no interesting games")  # fmt: skip
 
     img_data = final_img.generate(
         quote.text,
         game.img_data,
         random.choice(BACKGROUNDS),
         random.choice(QUOTE_FONTS),
-        player.summoner_name,
+        summoner.summoner_name,
         game.champion,
     )
     with open(f"last_generated.png", "wb+") as f:

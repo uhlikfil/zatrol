@@ -1,6 +1,10 @@
+import Header from "components/header/Header"
+import Generate from "components/mainpage/Generate"
+import RegisterQuote from "components/mainpage/RegisterQuote"
+import RegisterSummoner from "components/mainpage/RegisterSummoner"
+import SummonerContextProvider from "context/SummonerContext"
 import { QueryClient, QueryClientProvider } from "react-query"
-import Header from "./components/header/Header"
-import SummonerContextProvider from "./context/SummonerContext"
+import { useRoutes } from "react-router-dom"
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -11,11 +15,20 @@ const queryClient = new QueryClient({
   },
 })
 
-function App() {
+const RoutedViews = () =>
+  useRoutes([
+    { path: "/", element: <Generate /> },
+    { path: "/generate", element: <Generate /> },
+    { path: "/regsumm", element: <RegisterSummoner /> },
+    { path: "/regquote", element: <RegisterQuote /> },
+  ])
+
+const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <SummonerContextProvider>
         <Header />
+        <RoutedViews />
       </SummonerContextProvider>
     </QueryClientProvider>
   )
