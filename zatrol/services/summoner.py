@@ -28,5 +28,5 @@ def summoner_name_to_puuid(region: Union[str, Region], summoner_name: str) -> st
         region = Region.parse(region)
     puuid = riot_api.get_puuid(region, summoner_name)
     if not puuid:
-        raise ValueError(f"Summoner '{summoner_name}' not found in the {region} region")
+        raise ValueError(f"Summoner '{summoner_name}' not found in the {region.name} region")  # fmt: skip
     return puuid

@@ -1,6 +1,8 @@
 from flask import Flask
 from flask_cors import CORS
 
+from zatrol.server import metadata
+
 
 def create_app() -> Flask:
     app = Flask(__name__.split(".")[0])
@@ -20,9 +22,9 @@ def _register_err_handlers(app: Flask) -> None:
 
 
 def _register_blueprints(app: Flask) -> None:
-    from zatrol.server import generate, quote, region, summoner
+    from zatrol.server import generate, quote, summoner
 
     app.register_blueprint(generate.blueprint)
     app.register_blueprint(quote.blueprint)
-    app.register_blueprint(region.blueprint)
+    app.register_blueprint(metadata.blueprint)
     app.register_blueprint(summoner.blueprint)

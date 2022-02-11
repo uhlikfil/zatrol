@@ -9,13 +9,18 @@ logger = getLogger(f"{__package__}.{__name__}")
 champions = dict()
 
 
+def get_champions() -> list[str]:
+    names = [champion["name"] for champion in champions.values()]
+    return list(sorted(names))
+
+
 def validate_champions(champ_names: list[str]) -> list[str]:
     valid_names = []
     invalid_names = []
     for name in champ_names:
-        valid_name = champions.get(name.lower())
-        if valid_name:
-            valid_names.append(valid_name["name"])
+        champion = champions.get(name.lower())
+        if champion:
+            valid_names.append(champion["name"])
         else:
             invalid_names.append(name)
     if invalid_names:

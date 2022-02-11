@@ -47,7 +47,7 @@ def _bg_size(img: Image) -> tuple[int, int, int]:
 
 
 def _font(font_name: str, wanted_height: int) -> FreeTypeFont:
-    ASSETS = Config.img_gen.assets_dir
+    ASSETS = Config.services.assets_dir
 
     for i in range(1, 256):
         font = ImageFont.truetype(f"{ASSETS}/fonts/{font_name}", i)

@@ -7,6 +7,7 @@ import Select from "react-select"
 import { summonerColor, textColor } from "utils/color-styles"
 
 const SummonerSelect = ({ nameFn }) => {
+  const { summoner, setSummoner } = useContext(SummonerContext)
   const {
     data: summoners,
     isLoading,
@@ -25,7 +26,6 @@ const SummonerSelect = ({ nameFn }) => {
       retry: 3,
     }
   )
-  const { summoner, setSummoner } = useContext(SummonerContext)
 
   const options = () => {
     if (isLoading) return [{ value: "loading", label: "Loading..." }]

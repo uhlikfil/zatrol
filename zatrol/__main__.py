@@ -15,9 +15,7 @@ def load_env(filename: str) -> None:
 
 
 def init_env(filenames: list[str]) -> None:
-    env_files = ["00-prod.env"]
-    env_files.extend(filenames)
-    for file in env_files:
+    for file in filenames:
         load_env(file)
 
 

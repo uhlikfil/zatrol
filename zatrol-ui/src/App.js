@@ -10,7 +10,8 @@ const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       refetchOnWindowFocus: false,
-      staleTime: 10,
+      staleTime: 10 * 60 * 1000,
+      retry: 3,
     },
   },
 })
@@ -19,8 +20,8 @@ const RoutedViews = () =>
   useRoutes([
     { path: "/", element: <Generate /> },
     { path: "/generate", element: <Generate /> },
-    { path: "/regsumm", element: <RegisterSummoner /> },
     { path: "/regquote", element: <RegisterQuote /> },
+    { path: "/regsumm", element: <RegisterSummoner /> },
   ])
 
 const App = () => {

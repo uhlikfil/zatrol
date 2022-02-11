@@ -14,11 +14,11 @@ QUOTE_FONTS = None
 def init():
     global BACKGROUNDS, QUOTE_FONTS
     BACKGROUNDS = [
-        str(path) for path in Path(Config.img_gen.assets_dir, "bg").glob("*.jpg")
+        str(path) for path in Path(Config.services.assets_dir, "bg").glob("*.jpg")
     ]
     QUOTE_FONTS = [
         str(path)
-        for path in Path(Config.img_gen.assets_dir, "fonts", "quote").glob("*.ttf")
+        for path in Path(Config.services.assets_dir, "fonts", "quote").glob("*.ttf")
     ]
 
 

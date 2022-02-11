@@ -35,11 +35,11 @@ const Header = () => {
               >
                 <Link to="/generate">Generate Image</Link>
               </li>
-              <li className={isActive("/regsumm/*") ? "is-active" : ""}>
-                <Link to="/regsumm">Register Summoner</Link>
-              </li>
               <li className={isActive("/regquote/*") ? "is-active" : ""}>
                 <Link to="regquote">Register Quotes</Link>
+              </li>
+              <li className={isActive("/regsumm/*") ? "is-active" : ""}>
+                <Link to="/regsumm">Register Summoner</Link>
               </li>
             </ul>
           </div>

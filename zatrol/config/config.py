@@ -25,8 +25,10 @@ class RiotAPI:
 
 
 @dataclass(frozen=True)
-class ImgGen:
+class Services:
     assets_dir: str
+    min_quote_len: int
+    max_quote_len: int
 
 
 class Config:
@@ -48,9 +50,7 @@ class Config:
                 os.getenv("CHAMPIONS_INTERVAL_H"),
                 os.getenv("MATCH_HISTORY_INTERVAL_H"),
             )
-            cls.img_gen = ImgGen(
-                os.getenv("ASSETS_DIR"),
-            )
+            cls.services = Services(os.getenv("ASSETS_DIR"), 3, 100)
         except ValueError as error:
             raise ConfigLoadError(f"Error while loading configuration\n{error}")
 
