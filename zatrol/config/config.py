@@ -20,8 +20,8 @@ class Server:
 @dataclass(frozen=True)
 class RiotAPI:
     api_key: str
-    champions_interval_h: int
-    match_history_interval_h: int
+    champions_interval_h: float
+    match_history_interval_h: float
 
 
 @dataclass(frozen=True)

@@ -14,6 +14,7 @@ async function get(pathname, query) {
   if (query) BASE_URL.search = new URLSearchParams(query)
 
   const response = await fetch(url, opts)
+  if (response.status == 500) throw new Error("Unexpected server error!")
   const json = await response.json()
   console.log(`< GET ${url.toString()} : `, json)
   if (!response.ok) throw new Error(json)
@@ -34,6 +35,7 @@ async function post(pathname, body, query) {
 
   console.log(`> POST: ${url.toString()} :`, opts.body.substring(0, 80))
   const response = await fetch(url, opts)
+  if (response.status == 500) throw new Error("Unexpected server error!")
   const json = response.status == 204 ? true : await response.json()
   console.log(`< POST ${url.toString()} : `, json)
   if (!response.ok) throw new Error(json.error)

@@ -9,13 +9,14 @@ from zatrol.database import connection_manager as cm
 from zatrol.database import db_api
 from zatrol.model.dbschema import Summoner
 from zatrol.services.img_gen import game_img
-from zatrol.utils import threading_utils
+from zatrol.utils import threading_utils as tu
 
 logger = getLogger(f"{__package__}.{__name__}")
 
 
 def register() -> None:
-    threading.Thread(target=_check_summoners).start()
+    args = (Config.riot_api.match_history_interval_h * 60, _check_summoners)
+    threading.Thread(target=tu.run_periodically, args=args).start()
 
 
 def _check_summoners() -> None:
@@ -26,9 +27,6 @@ def _check_summoners() -> None:
         for summoner in summoners:
             process_summoner(sess, summoner)
         sess.commit()
-
-    schedule_minutes = Config.riot_api.match_history_interval_h * 60
-    threading_utils.schedule(schedule_minutes, _check_summoners)
 
 
 def process_summoner(session: Session, summoner: Summoner) -> None:
@@ -53,15 +51,14 @@ def _process_match(session: Session, data: dict, puuid: str) -> None:
     assists = participant["assists"]
     if deaths == 0 or _weighted_kda(kills, deaths, assists) >= 1:
         return None
-
+    logger.info("found a nice game played as %s with %d/%d/%d", participant["championName"], kills, deaths, assists)  # fmt: skip
     img = game_img.create_img(
-        participant["championName"],
+        participant["championId"],
         kills,
         deaths,
         assists,
         participant["win"],
     )
-    logger.info("found a nice game played as %s with %d/%d/%d", participant["championName"], kills, deaths, assists)  # fmt: skip
     db_api.insert_game(session, puuid, img, participant["championName"])
 
 

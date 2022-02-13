@@ -2,7 +2,7 @@ from logging import getLogger
 
 from zatrol.api import riot_api
 from zatrol.config import Config
-from zatrol.utils import threading_utils
+from zatrol.utils import threading_utils as tu
 
 logger = getLogger(f"{__package__}.{__name__}")
 
@@ -29,7 +29,8 @@ def validate_champions(champ_names: list[str]) -> list[str]:
 
 
 def register() -> None:
-    _update_champions()
+    interval_minutes = Config.riot_api.champions_interval_h * 60
+    tu.run_periodically(interval_minutes, _update_champions)
 
 
 def _update_champions() -> None:
@@ -38,6 +39,3 @@ def _update_champions() -> None:
     champs = riot_api.get_champions()
     logger.info("got %d champions from Riot API", len(champs))
     champions = {name.lower(): data for name, data in champs.items()}
-
-    schedule_minutes = Config.riot_api.champions_interval_h * 60
-    threading_utils.schedule(schedule_minutes, _update_champions)

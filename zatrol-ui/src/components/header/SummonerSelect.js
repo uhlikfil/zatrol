@@ -28,8 +28,8 @@ const SummonerSelect = ({ nameFn }) => {
   )
 
   const options = () => {
-    if (isLoading) return [{ value: "loading", label: "Loading..." }]
-    if (isError) return [{ value: "error", label: "Error loading summoners" }]
+    if (isLoading) return []
+    if (isError) return []
     return Object.values(summoners).map((p) => {
       return { value: p.puuid, label: nameFn(p) }
     })
@@ -45,6 +45,7 @@ const SummonerSelect = ({ nameFn }) => {
       options={options()}
       onChange={selectCallback}
       width="256px"
+      placeholder={isLoading ? "Loading..." : isError ? "Error" : "Select a summoner"}
       styles={{
         control: (provided, state) => ({
           ...provided,
@@ -69,6 +70,9 @@ const SummonerSelect = ({ nameFn }) => {
             ...provided,
             backgroundColor: bgColor,
             color: textColor(bgColor),
+            ":active": {
+              backgroundColor: color.hex(),
+            },
           }
         },
       }}

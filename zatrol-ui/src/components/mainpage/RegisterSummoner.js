@@ -4,7 +4,7 @@ import { getRegions, postSummoner } from "api/zatrol-api"
 import Result from "components/result/Result"
 import { SummonerContext } from "context/SummonerContext"
 import React, { useContext, useEffect, useRef, useState } from "react"
-import { useQuery } from "react-query"
+import { useQuery, useQueryClient } from "react-query"
 import { summonerColor } from "utils/color-styles"
 
 const RegisterSummoner = () => {
@@ -19,6 +19,7 @@ const RegisterSummoner = () => {
   const [summonerName, setSummonerName] = useState("")
 
   const resultRef = useRef()
+  const queryClient = useQueryClient()
 
   const options = () => {
     if (isLoading) return <option>Loading...</option>
@@ -36,6 +37,7 @@ const RegisterSummoner = () => {
       resultRef.current.loading()
       await postSummoner(selectedRegion, summonerName)
       resultRef.current.success()
+      queryClient.invalidateQueries("summoners")
     } catch (exception) {
       resultRef.current.error(exception.message)
     }

@@ -1,3 +1,4 @@
+import threading
 from typing import Union
 
 from zatrol.api import riot_api
@@ -9,13 +10,19 @@ from zatrol.services import match_history as match_history_svc
 
 
 def insert_summoner(region: str, summoner_name: str) -> None:
+    def process_new():
+        with cm.session_mkr() as sess:
+            summoner = db_api.select_summoner(sess, puuid)
+            match_history_svc.process_summoner(sess, summoner)
+            sess.commit()
+
     e_region = Region.parse(region)
     puuid = summoner_name_to_puuid(e_region, summoner_name)
     with cm.session_mkr() as sess:
         db_api.insert_summoner(sess, puuid, e_region, summoner_name)
-        summoner = db_api.select_summoner(sess, puuid)
-        match_history_svc.process_summoner(sess, summoner)
         sess.commit()
+
+    threading.Thread(target=process_new).start()
 
 
 def get_summoners() -> list[Summoner]:

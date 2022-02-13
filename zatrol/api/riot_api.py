@@ -22,7 +22,7 @@ def get_puuid(region: Region, summoner_name: str) -> str:
 
 def get_matches(region: Region, puuid: str) -> list[str]:
     area = RegionArea.get_area(region)
-    return client.match.matchlist_by_puuid(area.value, puuid)
+    return client.match.matchlist_by_puuid(area.value, puuid, type="ranked")
 
 
 def get_match(region: Region, match_id: str) -> dict:
@@ -36,9 +36,9 @@ def get_champions() -> dict:
     return champ_list["data"]
 
 
-def get_champion_icon(champion_name: int) -> bytes:
-    url = "http://ddragon.leagueoflegends.com/cdn/12.3.1/img/champion"
-    return requests.get(f"{url}/{champion_name}.png").content
+def get_champion_icon(champion_key: int) -> bytes:
+    url = f"https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-icons/{champion_key}.png"
+    return requests.get(url).content
 
 
 def _version(type_: str) -> str:
