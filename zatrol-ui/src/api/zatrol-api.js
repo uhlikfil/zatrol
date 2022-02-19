@@ -17,7 +17,7 @@ async function get(pathname, query) {
   if (response.status == 500) throw new Error("Unexpected server error!")
   const json = await response.json()
   console.log(`< GET ${url.toString()} : `, json)
-  if (!response.ok) throw new Error(json)
+  if (!response.ok) throw new Error(json.error)
   return json
 }
 
@@ -60,4 +60,8 @@ export async function postSummoner(region, summoner_name) {
 
 export async function postQuote(puuid, text, champ_restrictions) {
   return await post("/quote", { puuid, text, champ_restrictions })
+}
+
+export async function generate(puuid) {
+  return await get(`/generate/${puuid}`)
 }
