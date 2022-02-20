@@ -1,8 +1,7 @@
 import argparse
+import os
 
 import dotenv
-
-from zatrol.config import Config
 
 
 def load_env(filename: str) -> None:
@@ -23,7 +22,7 @@ def run_as_server() -> None:
     from . import wsgi
 
     app = wsgi()
-    app.run(port=Config.server.port)
+    app.run(port=os.getenv("DEV_SERVER_PORT", 6000))
 
 
 def run_interactive() -> None:

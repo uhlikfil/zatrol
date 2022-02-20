@@ -1,17 +1,16 @@
-const HOST = process.env.REACT_APP_SERVER_HOST || "http://localhost"
-const PORT = process.env.REACT_APP_SERVER_PORT || 8000
-const BASE_URL = `${HOST}:${PORT}/api`
+const DEV_HOST = "http://localhost"
+const DEV_PORT = 8000
+const BASE_URL =
+  process.env.NODE_ENV == "production" ? "/api" : `${DEV_HOST}:${DEV_PORT}/api`
 
 async function get(pathname, query) {
   const opts = {
     method: "GET",
-    mode: "cors",
     headers: { "Content-Type": "application/json" },
   }
 
-  const url = new URL(BASE_URL)
-  url.pathname += pathname
-  if (query) BASE_URL.search = new URLSearchParams(query)
+  let url = BASE_URL + pathname
+  if (query) url += "?" + new URLSearchParams(query)
 
   const response = await fetch(url, opts)
   if (response.status == 500) throw new Error("Unexpected server error!")
@@ -24,14 +23,12 @@ async function get(pathname, query) {
 async function post(pathname, body, query) {
   const opts = {
     method: "POST",
-    mode: "cors",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
   }
 
-  const url = new URL(BASE_URL)
-  url.pathname += pathname
-  if (query) BASE_URL.search = new URLSearchParams(query)
+  let url = BASE_URL + pathname
+  if (query) url += "?" + new URLSearchParams(query)
 
   console.log(`> POST: ${url.toString()} :`, opts.body.substring(0, 80))
   const response = await fetch(url, opts)

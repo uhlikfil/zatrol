@@ -5,16 +5,7 @@ from pydantic.dataclasses import dataclass
 
 @dataclass(frozen=True)
 class DbConnection:
-    host: str
-    port: int
-    username: str
-    password: str
-    database: str
-
-
-@dataclass(frozen=True)
-class Server:
-    port: int
+    database_url: str
 
 
 @dataclass(frozen=True)
@@ -37,14 +28,7 @@ class Config:
     @classmethod
     def load_env(cls) -> None:
         try:
-            cls.db_connection = DbConnection(
-                os.getenv("DB_HOST"),
-                os.getenv("DB_PORT"),
-                os.getenv("DB_USR"),
-                os.getenv("DB_PSW"),
-                os.getenv("DATABASE"),
-            )
-            cls.server = Server(os.getenv("SERVER_PORT"))
+            cls.db_connection = DbConnection(os.getenv("DATABASE_URL"))
             cls.riot_api = RiotAPI(
                 os.getenv("RIOT_API_KEY"),
                 os.getenv("CHAMPIONS_INTERVAL_H"),

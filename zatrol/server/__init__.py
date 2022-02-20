@@ -1,12 +1,26 @@
+import os
+
 from flask import Flask
-from flask_cors import CORS
 
 from zatrol.server import metadata
 
 
 def create_app() -> Flask:
-    app = Flask(__name__.split(".")[0])
-    CORS(app)
+    app = Flask(
+        __name__.split(".")[0],
+        template_folder="../zatrol-ui/build",
+        static_folder="../zatrol-ui/build/static",
+    )
+
+    if os.getenv("SERVE_UI"):
+        from zatrol.server import static
+
+        app.register_blueprint(static.blueprint)
+    else:  # the UI will be running on a different port, CORS is needed
+        from flask_cors import CORS
+
+        CORS(app)
+
     _register_err_handlers(app)
     _register_blueprints(app)
 

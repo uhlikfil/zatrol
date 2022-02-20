@@ -13,13 +13,8 @@ def init() -> None:
     global engine
     global session_mkr
 
-    host = Config.db_connection.host
-    username = Config.db_connection.username
-    password = Config.db_connection.password
-    database = Config.db_connection.database
-    connection_str = f"postgresql://{username}:{password}@{host}/{database}"
-
-    engine = create_engine(connection_str, future=True)
+    uri = Config.db_connection.database_url.replace("postgres://", "postgresql://")
+    engine = create_engine(uri, future=True)
     session_mkr = sessionmaker(engine, autocommit=False)
 
     metadata.create_all(engine)
