@@ -22,6 +22,11 @@ class Services:
     max_quote_len: int
 
 
+@dataclass(frozen=True)
+class StaticWeb:
+    ui_build_dir: str
+
+
 class Config:
     """a class holding the app configuration - is loaded from environmental variables"""
 
@@ -35,6 +40,7 @@ class Config:
                 os.getenv("MATCH_HISTORY_INTERVAL_H"),
             )
             cls.services = Services(os.getenv("ASSETS_DIR"), 3, 100)
+            cls.static_web = StaticWeb(os.getenv("UI_BUILD_DIR"))
         except ValueError as error:
             raise ConfigLoadError(f"Error while loading configuration\n{error}")
 

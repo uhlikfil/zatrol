@@ -2,6 +2,7 @@ import os
 
 from flask import Flask
 
+from zatrol.config import Config
 from zatrol.server import metadata
 
 
@@ -11,8 +12,8 @@ def create_app() -> Flask:
     if os.getenv("SERVE_UI"):
         from zatrol.server import static
 
-        app.template_folder = "/zatrol-ui/build"
-        app.static_folder = "/zatrol-ui/build/static"
+        app.template_folder = Config.static_web.ui_build_dir
+        app.static_folder = app.template_folder + "/static"
         app.register_blueprint(static.blueprint)
 
     else:  # the UI will be running on a different port, CORS is needed
