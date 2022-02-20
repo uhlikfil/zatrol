@@ -32,6 +32,7 @@ ENV SERVE_UI
 WORKDIR ./app
 
 # copy build artifacts
+COPY assets /assets
 COPY --from=UI_BUILD /zatrol-ui/build ./zatrol-ui/build
 COPY --from=BE_BUILD /dist ./app_wheels
 
