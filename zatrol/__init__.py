@@ -42,14 +42,4 @@ def wsgi():
     from zatrol.server import create_app
 
     init()
-    app = create_app()
-    validate(app)
-    return app
-
-
-def validate(app) -> None:
-    from pathlib import Path
-
-    print(app.template_folder)
-    print(app.static_folder)
-    print(list(Path(app.template_folder).glob("*")))
+    return create_app()
