@@ -6,16 +6,15 @@ from zatrol.server import metadata
 
 
 def create_app() -> Flask:
-    app = Flask(
-        __name__.split(".")[0],
-        template_folder="../zatrol-ui/build",
-        static_folder="../zatrol-ui/build/static",
-    )
+    app = Flask(__name__.split(".")[0])
 
     if os.getenv("SERVE_UI"):
         from zatrol.server import static
 
+        app.template_folder = "/zatrol-ui/build"
+        app.static_folder = "/zatrol-ui/build/static"
         app.register_blueprint(static.blueprint)
+
     else:  # the UI will be running on a different port, CORS is needed
         from flask_cors import CORS
 
