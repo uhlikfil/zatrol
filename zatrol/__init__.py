@@ -52,4 +52,4 @@ def validate(app) -> None:
 
     print(app.template_folder)
     print(app.static_folder)
-    print(list(Path(app.template_fodler).glob("*")))
+    print(list(Path(app.template_folder).glob("*")))
