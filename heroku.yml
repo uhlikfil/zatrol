@@ -3,3 +3,5 @@ build:
     web: Dockerfile
 run:
   web: gunicorn "zatrol:wsgi()" -b 0.0.0.0:$PORT
+  worker:
+    image: web
