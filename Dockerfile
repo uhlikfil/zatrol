@@ -42,4 +42,4 @@ RUN pip install ./app_wheels/*
 RUN pip install gunicorn
 
 # run the app
-ENTRYPOINT gunicorn "zatrol:wsgi()" -b 0.0.0.0:$SERVER_PORT
+ENTRYPOINT python -m zatrol
