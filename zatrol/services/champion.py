@@ -35,7 +35,7 @@ def register() -> None:
 
 def _update_champions() -> None:
     global champions
-    logger.info("updating champion list in the database")
+    logger.info("updating champion list")
     champs = riot_api.get_champions()
     logger.info("got %d champions from Riot API", len(champs))
     champions = {name.lower(): data for name, data in champs.items()}

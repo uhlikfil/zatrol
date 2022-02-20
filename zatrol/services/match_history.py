@@ -20,7 +20,6 @@ def register() -> None:
 
 
 def _check_summoners() -> None:
-    logger.info("checking match history of all registered summoners")
     with cm.session_mkr() as sess:
         summoners = db_api.select_all_summoners(sess)
         logger.info("going to process history of all registered summoners")
