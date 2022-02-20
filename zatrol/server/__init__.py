@@ -2,7 +2,6 @@ import os
 
 from flask import Flask
 
-from zatrol.config import Config
 from zatrol.server import metadata
 
 
@@ -10,6 +9,7 @@ def create_app() -> Flask:
     app = Flask(__name__.split(".")[0])
 
     if os.getenv("SERVE_UI"):
+        from zatrol.config import Config
         from zatrol.server import static
 
         app.template_folder = Config.static_web.ui_build_dir
