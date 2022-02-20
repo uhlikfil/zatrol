@@ -22,7 +22,7 @@ def run_as_server() -> None:
     from . import wsgi
 
     app = wsgi()
-    app.run(port=os.getenv("DEV_SERVER_PORT", 6000))
+    app.run(port=os.getenv("PORT", 6000))
 
 
 def run_interactive() -> None:

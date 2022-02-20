@@ -26,7 +26,7 @@ ENV RIOT_API_KEY=
 ENV CHAMPIONS_INTERVAL_H=
 ENV MATCH_HISTORY_INTERVAL_H=
 ENV ASSETS_DIR=
-ENV SERVER_PORT=
+ENV PORT=
 ENV SERVE_UI=
 
 WORKDIR /app
@@ -42,4 +42,4 @@ RUN pip install ./app_wheels/*
 RUN pip install gunicorn
 
 # run the app
-ENTRYPOINT gunicorn "zatrol:wsgi()" -b 0.0.0.0:$SERVER_PORT
+ENTRYPOINT gunicorn "zatrol:wsgi()" -b 0.0.0.0:$PORT
