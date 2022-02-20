@@ -43,6 +43,3 @@ def wsgi():
 
     init()
     return create_app()
-
-
-app = wsgi()
