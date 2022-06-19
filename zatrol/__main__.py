@@ -14,7 +14,7 @@ def load_env(filename: str) -> None:
 
 
 def init_env(filenames: list[str]) -> None:
-    for file in filenames:
+    for file in [".env"] + filenames:
         load_env(file)
 
 

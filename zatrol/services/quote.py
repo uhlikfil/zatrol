@@ -1,16 +1,23 @@
-from zatrol.config import Config
-from zatrol.database import connection_manager as cm
+from sa_decor import with_connection
+from sqlalchemy.exc import IntegrityError
+
 from zatrol.database import db_api
+from zatrol.exception import UnregisteredSummoner
+from zatrol.model.db_schema import Quote
 from zatrol.services import champion as champion_svc
 
 
-def insert_quote(puuid: str, text: str, champ_restrictions: list[str]) -> None:
-    if not Config.services.min_quote_len <= len(text) < Config.services.max_quote_len:
-        raise ValueError(f"Quote length must be between {Config.services.min_quote_len} and {Config.services.max_quote_len} characters")  # fmt: skip
+@with_connection()
+def get_quotes(puuid: str, *, connection) -> list[Quote]:
+    return db_api.select_quotes(connection, puuid)
+
+
+@with_connection()
+def add_quote(
+    puuid: str, text: str, champ_restrictions: list[str], *, connection
+) -> None:
     champions = champion_svc.validate_champions(champ_restrictions)
     try:
-        with cm.session_mkr() as sess:
-            db_api.insert_quote(sess, puuid, text, champions)
-            sess.commit()
-    except:
-        raise ValueError("Attempted to add quote to a unregistered summoner")
+        db_api.insert_quote(connection, puuid, text, champions)
+    except IntegrityError:
+        raise UnregisteredSummoner(puuid)

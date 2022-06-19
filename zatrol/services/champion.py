@@ -1,7 +1,7 @@
 from logging import getLogger
 
-from zatrol.api import riot_api
 from zatrol.config import Config
+from zatrol.riot import riot_api
 from zatrol.utils import threading_utils as tu
 
 logger = getLogger(f"{__package__}.{__name__}")
@@ -9,9 +9,13 @@ logger = getLogger(f"{__package__}.{__name__}")
 champions = dict()
 
 
+def init() -> None:
+    interval_minutes = Config.riot.champions_interval_h * 60
+    tu.run_periodically(interval_minutes, _update_champions)
+
+
 def get_champions() -> list[str]:
-    names = [champion["name"] for champion in champions.values()]
-    return list(sorted(names))
+    return list(sorted(map(lambda c: c["name"], champions.values())))
 
 
 def validate_champions(champ_names: list[str]) -> list[str]:
@@ -26,11 +30,6 @@ def validate_champions(champ_names: list[str]) -> list[str]:
     if invalid_names:
         raise ValueError(f"Invalid champion names: {invalid_names}")
     return valid_names
-
-
-def register() -> None:
-    interval_minutes = Config.riot_api.champions_interval_h * 60
-    tu.run_periodically(interval_minutes, _update_champions)
 
 
 def _update_champions() -> None:

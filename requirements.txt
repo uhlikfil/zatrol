@@ -1,7 +1,9 @@
+flask
+flask-pydantic
+flask-graphql
 sqlalchemy
 psycopg2-binary
-pydantic
+sa-decor
+graphene_sqlalchemy
 pillow
 riotwatcher
-flask
-flask-cors

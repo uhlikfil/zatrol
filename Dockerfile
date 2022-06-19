@@ -25,7 +25,7 @@ ENV DATABASE_URL=
 ENV RIOT_API_KEY=
 ENV CHAMPIONS_INTERVAL_H=
 ENV MATCH_HISTORY_INTERVAL_H=
-ENV ASSETS_DIR=
+ENV RESOURCES_DIR=
 ENV PORT=
 ENV SERVE_UI=
 ENV UI_BUILD_DIR=
@@ -33,7 +33,7 @@ ENV UI_BUILD_DIR=
 WORKDIR /app
 
 # copy build artifacts
-COPY assets /assets
+COPY resources /resources
 COPY --from=UI_BUILD /zatrol-ui/build /zatrol-ui/build
 COPY --from=BE_BUILD /dist ./app_wheels
 

@@ -1,33 +1,32 @@
 import threading
 from typing import Union
 
-from zatrol.api import riot_api
-from zatrol.database import connection_manager as cm
+from sa_decor import with_connection
+
 from zatrol.database import db_api
-from zatrol.model.dbschema import Summoner
+from zatrol.model.db_schema import Summoner
 from zatrol.model.region import Region
+from zatrol.riot import riot_api
 from zatrol.services import match_history as match_history_svc
 
 
-def insert_summoner(region: str, summoner_name: str) -> None:
-    def process_new():
-        with cm.session_mkr() as sess:
-            summoner = db_api.select_summoner(sess, puuid)
-            match_history_svc.process_summoner(sess, summoner)
-            sess.commit()
+@with_connection()
+def insert_summoner(region: str, summoner_name: str, *, connection) -> None:
+    @with_connection()
+    def process_new(*, connection):
+        summoner = db_api.select_summoner(connection, puuid)
+        match_history_svc.process_summoner(connection, summoner)
 
     e_region = Region.parse(region)
     puuid = summoner_name_to_puuid(e_region, summoner_name)
-    with cm.session_mkr() as sess:
-        db_api.insert_summoner(sess, puuid, e_region, summoner_name)
-        sess.commit()
+    db_api.insert_summoner(connection, puuid, e_region, summoner_name)
 
     threading.Thread(target=process_new).start()
 
 
-def get_summoners() -> list[Summoner]:
-    with cm.session_mkr() as sess:
-        return list(db_api.select_all_summoners(sess))
+@with_connection()
+def get_summoners(*, connection) -> list[Summoner]:
+    return list(db_api.select_all_summoners(connection))
 
 
 def summoner_name_to_puuid(region: Union[str, Region], summoner_name: str) -> str:
@@ -35,5 +34,6 @@ def summoner_name_to_puuid(region: Union[str, Region], summoner_name: str) -> st
         region = Region.parse(region)
     puuid = riot_api.get_puuid(region, summoner_name)
     if not puuid:
-        raise ValueError(f"Summoner '{summoner_name}' not found in the {region.name} region")  # fmt: skip
+        msg = f"Summoner '{summoner_name}' not found in the {region.name} region"
+        raise ValueError(msg)
     return puuid

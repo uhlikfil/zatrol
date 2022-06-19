@@ -10,7 +10,7 @@ client: LolWatcher = None
 
 def init() -> None:
     global client
-    client = LolWatcher(Config.riot_api.api_key)
+    client = LolWatcher(Config.riot.api_key)
 
 
 def get_puuid(region: Region, summoner_name: str) -> str:

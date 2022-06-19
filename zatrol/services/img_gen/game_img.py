@@ -3,8 +3,8 @@ import io
 from PIL import Image, ImageDraw, ImageFont
 from PIL.ImageFont import FreeTypeFont
 
-from zatrol.api import riot_api
 from zatrol.config import Config
+from zatrol.riot import riot_api
 
 
 def create_img(
@@ -47,10 +47,10 @@ def _bg_size(img: Image) -> tuple[int, int, int]:
 
 
 def _font(font_name: str, wanted_height: int) -> FreeTypeFont:
-    ASSETS = Config.services.assets_dir
+    FONT_FILE = str(Config.path.resources / "fonts" / font_name)
 
     for i in range(1, 256):
-        font = ImageFont.truetype(f"{ASSETS}/fonts/{font_name}", i)
+        font = ImageFont.truetype(FONT_FILE, i)
         height = font.getsize("Test string 123/45")[1]
         if height == wanted_height:
             return font
