@@ -14,13 +14,6 @@ class Region(Enum):
     KR = "kr"
     JP = "jp1"
 
-    @staticmethod
-    def parse(region: str) -> "Region":
-        try:
-            return Region[region]
-        except KeyError:
-            raise ValueError(f"Invalid region value '{region}', select one of {[r.name for r in Region]}")  # fmt: skip
-
 
 class RegionArea(Enum):
     AMERICAS = "americas"
