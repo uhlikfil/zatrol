@@ -1,7 +1,7 @@
-const DEV_HOST = "http://localhost"
-const DEV_PORT = 8000
-const BASE_URL =
-  process.env.NODE_ENV == "production" ? "/api" : `${DEV_HOST}:${DEV_PORT}/api`
+import { gql } from "@apollo/client"
+
+export const BASE_URL =
+  process.env.NODE_ENV == "production" ? "/api" : `http://localhost:8000/api`
 
 async function get(pathname, query) {
   const opts = {
@@ -12,6 +12,7 @@ async function get(pathname, query) {
   let url = BASE_URL + pathname
   if (query) url += "?" + new URLSearchParams(query)
 
+  console.log(`> GET: ${url.toString()}`)
   const response = await fetch(url, opts)
   if (response.status == 500) throw new Error("Unexpected server error!")
   const json = await response.json()
@@ -47,9 +48,19 @@ export async function getChampions() {
   return await get("/metadata/champion")
 }
 
-export async function getSummoners() {
-  return await get("/summoner")
-}
+export const summonersQuery = gql`
+  query {
+    summoners {
+      edges {
+        node {
+          puuid
+          summonerName
+          region
+        }
+      }
+    }
+  }
+`
 
 export async function postSummoner(region, summoner_name) {
   return await post("/summoner", { region, summoner_name })

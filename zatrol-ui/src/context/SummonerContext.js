@@ -1,15 +1,18 @@
 import { createContext, useMemo, useState } from "react"
 
 const SummonerContextProvider = ({ children }) => {
-  const [summoner, setSummoner] = useState(null)
-  const value = useMemo(() => ({ summoner, setSummoner }), [summoner])
+  const [selectedSummoner, setSelectedSummoner] = useState(null)
+  const value = useMemo(
+    () => ({ selectedSummoner, setSelectedSummoner }),
+    [selectedSummoner]
+  )
 
   return <SummonerContext.Provider value={value}>{children}</SummonerContext.Provider>
 }
 
 export const SummonerContext = createContext({
-  summoner: null,
-  setSummoner: () => {},
+  selectedSummoner: null,
+  setSelectedSummoner: () => {},
 })
 
 export default SummonerContextProvider

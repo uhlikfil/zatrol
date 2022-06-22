@@ -5,7 +5,7 @@ import { summonerColor } from "utils/color-styles"
 import SummonerSelect from "./SummonerSelect"
 
 const Header = () => {
-  const { summoner } = useContext(SummonerContext)
+  const { selectedSummoner } = useContext(SummonerContext)
   const currentUrl = useLocation()
 
   const isActive = (pattern) => {
@@ -15,15 +15,15 @@ const Header = () => {
   const name = (summoner) =>
     summoner == null
       ? "Pick a summoner!"
-      : `${summoner.summoner_name} #${summoner.region}`
+      : `${summoner.summonerName} #${summoner.region}`
 
   return (
-    <section className={`hero ${summonerColor(summoner)}`}>
+    <section className={`hero ${summonerColor(selectedSummoner)}`}>
       <div className="hero-body">
         <p className="title">
           <Link to={"/"}>Zatrol</Link>
         </p>
-        <p className="subtitle">{name(summoner)}</p>
+        <p className="subtitle">{name(selectedSummoner)}</p>
         <SummonerSelect nameFn={name} />
       </div>
       <div className="hero-foot">

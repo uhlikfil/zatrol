@@ -3,15 +3,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { getRegions, postSummoner } from "api/zatrol-api"
 import Result from "components/result/Result"
 import { SummonerContext } from "context/SummonerContext"
-import React, { useContext, useEffect, useRef, useState } from "react"
+import { useContext, useEffect, useRef, useState } from "react"
 import { useQuery, useQueryClient } from "react-query"
 import { summonerColor } from "utils/color-styles"
 
 const RegisterSummoner = () => {
-  const { summoner } = useContext(SummonerContext)
+  const { selectedSummoner: summoner } = useContext(SummonerContext)
   const { data: regions, isLoading, isError } = useQuery(["regions"], getRegions)
   useEffect(() => {
-    console.log("CALLBACK", regions)
     if (!isLoading && !isError) setSelectedRegion(regions[0])
   }, [regions])
 

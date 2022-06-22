@@ -1,51 +1,39 @@
-import { getSummoners } from "api/zatrol-api"
+import { useQuery } from "@apollo/client"
+import { summonersQuery } from "api/zatrol-api"
 import chroma from "chroma-js"
 import { SummonerContext } from "context/SummonerContext"
-import { useContext } from "react"
-import { useQuery } from "react-query"
+import { useContext, useState } from "react"
 import Select from "react-select"
 import { summonerColor, textColor } from "utils/color-styles"
 
 const SummonerSelect = ({ nameFn }) => {
-  const { summoner, setSummoner } = useContext(SummonerContext)
-  const {
-    data: summoners,
-    isLoading,
-    isError,
-  } = useQuery(
-    ["summoners"],
-    async () => {
-      const summonerList = await getSummoners()
-      return summonerList.reduce((map, p) => {
-        map[p.puuid] = p
-        return map
+  const { selectedSummoner, setSelectedSummoner } = useContext(SummonerContext)
+  const [summoners, setSummoners] = useState([])
+  const { loading, error } = useQuery(summonersQuery, {
+    onCompleted: (newData) => {
+      const newSummoners = newData.summoners.edges.reduce((sumMap, { node }) => {
+        sumMap[node.puuid] = node
+        return sumMap
       }, {})
+      setSummoners(newSummoners)
     },
-    {
-      staleTime: 10 * 60 * 1000,
-      retry: 3,
-    }
-  )
+  })
 
   const options = () => {
-    if (isLoading) return []
-    if (isError) return []
-    return Object.values(summoners).map((p) => {
-      return { value: p.puuid, label: nameFn(p) }
-    })
-  }
-
-  const selectCallback = (elem) => {
-    if (elem.value == "error" || elem.value == "loading") return
-    setSummoner(summoners[elem.value])
+    if (loading) return []
+    if (error) return []
+    return Object.values(summoners).map((smnr) => ({
+      value: smnr.puuid,
+      label: nameFn(smnr),
+    }))
   }
 
   return (
     <Select
       options={options()}
-      onChange={selectCallback}
+      onChange={(elem) => setSelectedSummoner(summoners[elem.value])}
       width="256px"
-      placeholder={isLoading ? "Loading..." : isError ? "Error" : "Select a summoner"}
+      placeholder={loading ? "Loading..." : error ? "Error" : "Select a summoner"}
       styles={{
         control: (provided, state) => ({
           ...provided,
@@ -58,7 +46,7 @@ const SummonerSelect = ({ nameFn }) => {
           width: state.selectProps.width,
         }),
         option: (provided, state) => {
-          const color = chroma(summonerColor(summoner, true))
+          const color = chroma(summonerColor(selectedSummoner, true))
           const bgColor = (
             state.isSelected
               ? color

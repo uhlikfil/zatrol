@@ -1,3 +1,4 @@
+import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client"
 import Header from "components/header/Header"
 import Generate from "components/mainpage/Generate"
 import RegisterQuote from "components/mainpage/RegisterQuote"
@@ -5,6 +6,7 @@ import RegisterSummoner from "components/mainpage/RegisterSummoner"
 import SummonerContextProvider from "context/SummonerContext"
 import { QueryClient, QueryClientProvider } from "react-query"
 import { useRoutes } from "react-router-dom"
+import { BASE_URL } from "./api/zatrol-api"
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -14,6 +16,11 @@ const queryClient = new QueryClient({
       retry: 3,
     },
   },
+})
+
+const gqlClient = new ApolloClient({
+  uri: BASE_URL + "/graphql",
+  cache: new InMemoryCache(),
 })
 
 const RoutedViews = () =>
@@ -26,12 +33,14 @@ const RoutedViews = () =>
 
 const App = () => {
   return (
-    <QueryClientProvider client={queryClient}>
-      <SummonerContextProvider>
-        <Header />
-        <RoutedViews />
-      </SummonerContextProvider>
-    </QueryClientProvider>
+    <ApolloProvider client={gqlClient}>
+      <QueryClientProvider client={queryClient}>
+        <SummonerContextProvider>
+          <Header />
+          <RoutedViews />
+        </SummonerContextProvider>
+      </QueryClientProvider>
+    </ApolloProvider>
   )
 }
 

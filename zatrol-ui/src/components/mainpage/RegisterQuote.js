@@ -8,7 +8,7 @@ import Select from "react-select"
 import { summonerColor, textColor } from "utils/color-styles"
 
 const RegisterQuote = () => {
-  const { summoner } = useContext(SummonerContext)
+  const { selectedSummoner: summoner } = useContext(SummonerContext)
   const { data: champions, isLoading, isError } = useQuery(["champions"], getChampions)
 
   const [quoteText, setQuoteText] = useState("")

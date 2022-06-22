@@ -1,11 +1,11 @@
 import { generate } from "api/zatrol-api"
 import { SummonerContext } from "context/SummonerContext"
-import React, { useContext } from "react"
+import { useContext } from "react"
 import { useQuery, useQueryClient } from "react-query"
 import { summonerColor } from "utils/color-styles"
 
 const Generate = () => {
-  const { summoner } = useContext(SummonerContext)
+  const { selectedSummoner: summoner } = useContext(SummonerContext)
 
   const queryClient = useQueryClient()
 
