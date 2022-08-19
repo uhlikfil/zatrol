@@ -2,20 +2,20 @@ import requests
 from requests.exceptions import HTTPError
 from riotwatcher import LolWatcher
 
-from zatrol.config import Config
 from zatrol.model.region import Region, RegionArea
+from zatrol.settings import Settings
 
 client: LolWatcher = None
 
 
-def init() -> None:
+def init(_) -> None:
     global client
-    client = LolWatcher(Config.riot_api.api_key)
+    client = LolWatcher(Settings.riot.API_KEY)
 
 
 def get_puuid(region: Region, summoner_name: str) -> str:
     try:
-        return client.summoner.by_name(region.value, summoner_name)["puuid"]
+        return client.summoner.by_name(region.name, summoner_name)["puuid"]
     except HTTPError:
         return None
 
@@ -30,7 +30,7 @@ def get_match(region: Region, match_id: str) -> dict:
     return client.match.by_id(area.value, match_id)
 
 
-def get_champions() -> dict:
+def get_champions() -> dict[str, dict]:
     champions_version = _version("champion")
     champ_list = client.data_dragon.champions(champions_version)
     return champ_list["data"]

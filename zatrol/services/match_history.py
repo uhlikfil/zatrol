@@ -3,11 +3,11 @@ from logging import getLogger
 
 from sqlalchemy.orm import Session
 
-from zatrol.api import riot_api
 from zatrol.config import Config
-from zatrol.database import connection_manager as cm
+from zatrol.database import connection as cm
 from zatrol.database import db_api
-from zatrol.model.dbschema import Summoner
+from zatrol.database.schema import Summoner
+from zatrol.services import api
 from zatrol.services.img_gen import game_img
 from zatrol.utils import threading_utils as tu
 
@@ -15,7 +15,7 @@ logger = getLogger(f"{__package__}.{__name__}")
 
 
 def register() -> None:
-    args = (Config.riot_api.match_history_interval_h * 60, _check_summoners)
+    args = (Config.riot.match_history_interval_h * 60, _check_summoners)
     threading.Thread(target=tu.run_periodically, args=args).start()
 
 
@@ -29,14 +29,14 @@ def _check_summoners() -> None:
 
 
 def process_summoner(session: Session, summoner: Summoner) -> None:
-    match_ids = riot_api.get_matches(summoner.region, summoner.puuid)
+    match_ids = api.get_matches(summoner.region, summoner.puuid)
     if summoner.last_match:
         match_ids = list(filter(lambda m_id: m_id > summoner.last_match, match_ids))
     logger.info("found %d new matches for '%s'", len(match_ids), summoner.summoner_name)
     if not match_ids:
         return
     for m_id in match_ids:
-        match_data = riot_api.get_match(summoner.region, m_id)["info"]
+        match_data = api.get_match(summoner.region, m_id)["info"]
         _process_match(session, match_data, summoner.puuid)
     db_api.update_summoner_last_match(session, summoner.puuid, match_ids[0])
 

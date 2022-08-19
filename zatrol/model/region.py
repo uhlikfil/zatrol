@@ -1,25 +1,27 @@
 from enum import Enum
 
+from zatrol.exceptions import InvalidValue
+
 
 class Region(Enum):
-    EUNE = "eun1"
-    EUW = "euw1"
-    TR = "tr1"
-    RU = "ru"
-    NA = "na1"
-    BR = "br1"
-    LAN = "la1"
-    LAS = "la2"
-    OCE = "oc1"
-    KR = "kr"
-    JP = "jp1"
+    eun1 = "EUNE"
+    euw1 = "EUW"
+    tr1 = "TR"
+    ru = "RU"
+    na1 = "NA"
+    br1 = "BR"
+    la1 = "LAN"
+    la2 = "LAS"
+    oc1 = "OCE"
+    kr = "KR"
+    jp1 = "JP"
 
     @staticmethod
     def parse(region: str) -> "Region":
         try:
             return Region[region]
         except KeyError:
-            raise ValueError(f"Invalid region value '{region}', select one of {[r.name for r in Region]}")  # fmt: skip
+            raise InvalidValue(f"Invalid region value {region}, select one of {[r.name for r in Region]}")  # fmt: skip
 
 
 class RegionArea(Enum):
@@ -33,15 +35,15 @@ class RegionArea(Enum):
 
 
 _region_map = {
-    Region.EUNE: RegionArea.EUROPE,
-    Region.EUW: RegionArea.EUROPE,
-    Region.TR: RegionArea.EUROPE,
-    Region.RU: RegionArea.EUROPE,
-    Region.NA: RegionArea.AMERICAS,
-    Region.BR: RegionArea.AMERICAS,
-    Region.LAN: RegionArea.AMERICAS,
-    Region.LAS: RegionArea.AMERICAS,
-    Region.OCE: RegionArea.AMERICAS,
-    Region.KR: RegionArea.ASIA,
-    Region.JP: RegionArea.ASIA,
+    Region.eun1: RegionArea.EUROPE,
+    Region.euw1: RegionArea.EUROPE,
+    Region.tr1: RegionArea.EUROPE,
+    Region.ru: RegionArea.EUROPE,
+    Region.na1: RegionArea.AMERICAS,
+    Region.br1: RegionArea.AMERICAS,
+    Region.la1: RegionArea.AMERICAS,
+    Region.la2: RegionArea.AMERICAS,
+    Region.oc1: RegionArea.AMERICAS,
+    Region.kr: RegionArea.ASIA,
+    Region.jp1: RegionArea.ASIA,
 }

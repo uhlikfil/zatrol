@@ -1,39 +1,30 @@
-import threading
-from typing import Union
+from fastapi import Depends
+from sqlalchemy.exc import IntegrityError
 
-from zatrol.api import riot_api
-from zatrol.database import connection_manager as cm
-from zatrol.database import db_api
-from zatrol.model.dbschema import Summoner
+from zatrol.database.dao.summoner import SummonerDAO
+from zatrol.database.schema import Summoner
+from zatrol.exceptions import AlreadyExists, NotFound
 from zatrol.model.region import Region
-from zatrol.services import match_history as match_history_svc
+from zatrol.services import riot_client
 
 
-def insert_summoner(region: str, summoner_name: str) -> None:
-    def process_new():
-        with cm.session_mkr() as sess:
-            summoner = db_api.select_summoner(sess, puuid)
-            match_history_svc.process_summoner(sess, summoner)
-            sess.commit()
+class SummonerSvc:
+    def __init__(self, dao: SummonerDAO = Depends()) -> None:
+        self.dao = dao
 
-    e_region = Region.parse(region)
-    puuid = summoner_name_to_puuid(e_region, summoner_name)
-    with cm.session_mkr() as sess:
-        db_api.insert_summoner(sess, puuid, e_region, summoner_name)
-        sess.commit()
+    async def get_all(self) -> list[Summoner]:
+        return await self.dao.get_all()
 
-    threading.Thread(target=process_new).start()
+    async def insert_summoner(self, region: Region, summoner_name: str) -> None:
+        puuid = self.summoner_name_to_puuid(region, summoner_name)
+        try:
+            await self.dao.create(puuid, region, summoner_name)
+        except IntegrityError:
+            raise AlreadyExists(f"Summoner {summoner_name} #{region.value} has already been registered before")  # fmt: skip
 
-
-def get_summoners() -> list[Summoner]:
-    with cm.session_mkr() as sess:
-        return list(db_api.select_all_summoners(sess))
-
-
-def summoner_name_to_puuid(region: Union[str, Region], summoner_name: str) -> str:
-    if isinstance(region, str):
-        region = Region.parse(region)
-    puuid = riot_api.get_puuid(region, summoner_name)
-    if not puuid:
-        raise ValueError(f"Summoner '{summoner_name}' not found in the {region.name} region")  # fmt: skip
-    return puuid
+    @staticmethod
+    def summoner_name_to_puuid(region: Region, summoner_name: str) -> str:
+        puuid = riot_client.get_puuid(region, summoner_name)
+        if not puuid:
+            raise NotFound(f"Summoner {summoner_name} not found in the {region.name} region")  # fmt: skip
+        return puuid

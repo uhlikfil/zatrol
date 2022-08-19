@@ -1,45 +1,57 @@
 import logging
-import sys
+import os
 
-from zatrol.api import riot_api
-from zatrol.config import Config
-from zatrol.database import connection_manager
-from zatrol.services import champion as champion_svc
-from zatrol.services import generate as generate_svc
-from zatrol.services import match_history as match_history_svc
+from fastapi import FastAPI
+from fastapi_restful.timing import add_timing_middleware
+
+logger = logging.getLogger("uvicorn")
 
 
-def init_logger(name: str, level=logging.WARN) -> None:
-    logger = logging.getLogger(name)
-    logger.handlers.clear()
-    fmt = logging.Formatter("[%(asctime)s] [%(levelname)7s] [%(process)s %(thread)s]: %(message)s (%(filename)s:%(lineno)s)")  # fmt: skip
-    ch = logging.StreamHandler()
-    ch.setFormatter(fmt)
+def create_app() -> FastAPI:
+    app = FastAPI(title="Zatrol", docs_url="/api/docs")
 
-    if level:
-        logger.setLevel(level)
-        ch.setLevel(level)
+    if os.getenv("SERVE_UI"):
+        from zatrol.routes import static
 
-    logger.addHandler(ch)
+        # TODO
+    else:  # the UI will be running on a different port, CORS is needed
+        from fastapi.middleware.cors import CORSMiddleware
 
+        app.add_middleware(
+            CORSMiddleware,
+            allow_origins=["http://localhost:3000"],
+            allow_methods=["*"],
+            allow_headers=["*"],
+        )
 
-def init() -> None:
-    try:
-        init_logger("sqlalchemy.engine", logging.WARN)
-        init_logger(__package__, logging.DEBUG)
-        Config.load_env()
-        riot_api.init()
-        connection_manager.init()
-        generate_svc.init()
-        champion_svc.register()
-        match_history_svc.register()
-    except Exception as error:
-        print(error, file=sys.stderr)
-        sys.exit(1)
+    add_timing_middleware(app, logger.info)
+    app.add_event_handler("startup", init_logging)
+    init_app(app)
+    init_routes(app)
+
+    return app
 
 
-def wsgi():
-    from zatrol.server import create_app
+def init_logging() -> None:
+    root_logger = logging.getLogger(__package__)
+    root_logger.setLevel(logger.level)
 
-    init()
-    return create_app()
+    for handler in logger.handlers:
+        root_logger.addHandler(handler)
+
+
+def init_app(app: FastAPI) -> None:
+    from zatrol.database import connection as db_connection
+    from zatrol.services import champion as champ_svc
+    from zatrol.services import riot_client
+
+    # order matters
+    for initable in (db_connection, riot_client, champ_svc):
+        initable.init(app)
+
+
+def init_routes(app: FastAPI) -> None:
+    from zatrol.routes import metadata, quote, summoner
+
+    for route in (metadata, quote, summoner):
+        app.include_router(route.router)

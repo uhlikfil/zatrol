@@ -3,7 +3,7 @@ import random
 from pathlib import Path
 
 from zatrol.config import Config
-from zatrol.database import connection_manager as cm
+from zatrol.database import connection as cm
 from zatrol.database import db_api
 from zatrol.services.img_gen import final_img
 

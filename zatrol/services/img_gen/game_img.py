@@ -3,14 +3,14 @@ import io
 from PIL import Image, ImageDraw, ImageFont
 from PIL.ImageFont import FreeTypeFont
 
-from zatrol.api import riot_api
 from zatrol.config import Config
+from zatrol.services import api
 
 
 def create_img(
     champion_key: int, kills: int, deaths: int, assists: int, won: bool
 ) -> bytes:
-    champ_icon = Image.open(io.BytesIO(riot_api.get_champion_icon(champion_key)))
+    champ_icon = Image.open(io.BytesIO(api.get_champion_icon(champion_key)))
     bg_w, bg_h, border_size = _bg_size(champ_icon)
     bg_img = Image.new("RGB", (bg_w, bg_h), color="#272a30")
     bg_img.paste(champ_icon, (border_size, border_size))
