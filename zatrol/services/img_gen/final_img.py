@@ -15,11 +15,11 @@ BORDER = 64
 def generate(
     text: str,
     game_img: bytes,
-    bg_path: str,
-    font_path: str,
     summoner_name: str,
     champion: str,
-) -> bytes:
+    bg_path: str,
+    font_path: str,
+) -> io.BytesIO:
     bg_img = Image.open(bg_path)
     bg_halfbox = (bg_img.width, bg_img.height // 2)
     # text
@@ -57,7 +57,8 @@ def generate(
     # save image
     byte_arr = io.BytesIO()
     bg_img.save(byte_arr, format="PNG")
-    return byte_arr.getvalue()
+    byte_arr.seek(0)
+    return byte_arr
 
 
 def _get_rand_pos(

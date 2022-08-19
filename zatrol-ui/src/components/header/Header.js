@@ -15,7 +15,7 @@ const Header = () => {
   const name = (summoner) =>
     summoner == null
       ? "Pick a summoner!"
-      : `${summoner.summoner_name} #${summoner.region}`
+      : `${summoner.summonerName} #${summoner.region}`
 
   return (
     <section className={`hero ${summonerColor(summoner)}`}>

@@ -6,10 +6,14 @@ from zatrol.database.schema import Quote
 
 
 class QuoteDAO(BaseDAO):
-    async def create(self, puuid: str, text: str, champs: list[str] = []) -> None:
+    async def create(self, puuid: str, text: str, champs: list[str] = []) -> int:
         vals = {Quote.puuid: puuid, Quote.text: text, Quote.champ_restrictions: champs}
-        stmt = insert(Quote).values(vals).on_conflict_do_nothing()
-        await self.connection.execute(stmt)
+        unique_constr = [Quote.puuid, Quote.text]
+        updatable = {Quote.champ_restrictions: champs}
+        stmt = insert(Quote).values(vals)
+        stmt = stmt.on_conflict_do_update(index_elements=unique_constr, set_=updatable)
+        result = await self.connection.execute(stmt)
+        return result.inserted_primary_key[0] if result.inserted_primary_key else None
 
     async def get_all(
         self, puuid: str, limit: int = None, offset: int = None

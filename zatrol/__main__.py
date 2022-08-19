@@ -5,8 +5,6 @@ from . import create_app
 
 def main() -> None:
     """Entrypoint of the application."""
-
-    app = create_app()
     uvicorn.run(
         "zatrol:create_app",
         factory=True,

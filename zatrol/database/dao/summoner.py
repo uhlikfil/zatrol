@@ -6,14 +6,15 @@ from zatrol.model.region import Region
 
 
 class SummonerDAO(BaseDAO):
-    async def create(self, puuid: str, region: Region, summoner_name: str) -> None:
+    async def create(self, puuid: str, region: Region, summoner_name: str) -> str:
         vals = {
             Summoner.puuid: puuid,
             Summoner.region: region,
             Summoner.summoner_name: summoner_name,
         }
         stmt = insert(Summoner).values(vals)
-        await self.connection.execute(stmt)
+        result = await self.connection.execute(stmt)
+        return result.inserted_primary_key[0]
 
     async def get_all(self, limit: int = None, offset: int = None) -> list[Summoner]:
         stmt = select(Summoner).limit(limit).offset(offset)

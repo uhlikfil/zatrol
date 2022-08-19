@@ -1,47 +1,51 @@
-import threading
 from logging import getLogger
 
-from sqlalchemy.orm import Session
+from fastapi import FastAPI
+from fastapi_restful.tasks import repeat_every
 
-from zatrol.config import Config
-from zatrol.database import connection as cm
-from zatrol.database import db_api
+from zatrol.database.dao.game import GameDAO
+from zatrol.database.dao.summoner import SummonerDAO
 from zatrol.database.schema import Summoner
-from zatrol.services import api
+from zatrol.services import riot_client
 from zatrol.services.img_gen import game_img
-from zatrol.utils import threading_utils as tu
+from zatrol.settings import Settings
 
 logger = getLogger(f"{__package__}.{__name__}")
 
 
-def register() -> None:
-    args = (Config.riot.match_history_interval_h * 60, _check_summoners)
-    threading.Thread(target=tu.run_periodically, args=args).start()
+def init(app: FastAPI) -> None:
+    interval_sec = Settings.const.HISTORY_INTERVAL_H * 60 * 60
+
+    @repeat_every(seconds=interval_sec)
+    async def check_summoners() -> None:
+        async with app.state.db_engine.begin() as connection:
+            summoner_dao = SummonerDAO(connection)
+            game_dao = GameDAO(connection)
+            summoners = await summoner_dao.get_all()
+            logger.info("going to process history of all registered summoners")
+            for summoner in summoners:
+                await process_summoner(summoner_dao, game_dao, summoner)
+            logger.info("all registered summoners processed")
+
+    app.add_event_handler("startup", check_summoners)
 
 
-def _check_summoners() -> None:
-    with cm.session_mkr() as sess:
-        summoners = db_api.select_all_summoners(sess)
-        logger.info("going to process history of all registered summoners")
-        for summoner in summoners:
-            process_summoner(sess, summoner)
-        sess.commit()
-
-
-def process_summoner(session: Session, summoner: Summoner) -> None:
-    match_ids = api.get_matches(summoner.region, summoner.puuid)
+async def process_summoner(
+    summoner_dao: SummonerDAO, game_dao: GameDAO, summoner: Summoner
+) -> None:
+    match_ids = riot_client.get_matches(summoner.region, summoner.puuid)
     if summoner.last_match:
         match_ids = list(filter(lambda m_id: m_id > summoner.last_match, match_ids))
     logger.info("found %d new matches for '%s'", len(match_ids), summoner.summoner_name)
     if not match_ids:
         return
     for m_id in match_ids:
-        match_data = api.get_match(summoner.region, m_id)["info"]
-        _process_match(session, match_data, summoner.puuid)
-    db_api.update_summoner_last_match(session, summoner.puuid, match_ids[0])
+        match_data = riot_client.get_match(summoner.region, m_id)["info"]
+        await _process_match(game_dao, match_data, summoner.puuid)
+    await summoner_dao.update(summoner.puuid, last_match=match_ids[0])
 
 
-def _process_match(session: Session, data: dict, puuid: str) -> None:
+async def _process_match(dao: GameDAO, data: dict, puuid: str) -> None:
     for participant in data["participants"]:
         if participant["puuid"] == puuid:
             break
@@ -58,7 +62,7 @@ def _process_match(session: Session, data: dict, puuid: str) -> None:
         assists,
         participant["win"],
     )
-    db_api.insert_game(session, puuid, img, participant["championName"])
+    await dao.create(puuid, img, participant["championName"])
 
 
 def _weighted_kda(k: int, d: int, a: int) -> float:

@@ -15,10 +15,10 @@ class SummonerSvc:
     async def get_all(self) -> list[Summoner]:
         return await self.dao.get_all()
 
-    async def insert_summoner(self, region: Region, summoner_name: str) -> None:
+    async def insert_summoner(self, region: Region, summoner_name: str) -> str:
         puuid = self.summoner_name_to_puuid(region, summoner_name)
         try:
-            await self.dao.create(puuid, region, summoner_name)
+            return await self.dao.create(puuid, region, summoner_name)
         except IntegrityError:
             raise AlreadyExists(f"Summoner {summoner_name} #{region.value} has already been registered before")  # fmt: skip
 
@@ -26,5 +26,5 @@ class SummonerSvc:
     def summoner_name_to_puuid(region: Region, summoner_name: str) -> str:
         puuid = riot_client.get_puuid(region, summoner_name)
         if not puuid:
-            raise NotFound(f"Summoner {summoner_name} not found in the {region.name} region")  # fmt: skip
+            raise NotFound(f"Summoner {summoner_name} not found in the {region.value} region")  # fmt: skip
         return puuid
