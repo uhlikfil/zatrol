@@ -6,7 +6,7 @@ from zatrol.model.api_schema import ErrorDTO, QuoteDTO
 from zatrol.services.quote import QuoteSvc
 
 router = InferringRouter(
-    prefix="/api/quote",
+    prefix="/quote",
     tags=["quote"],
     responses={status.HTTP_404_NOT_FOUND: {"model": ErrorDTO}},
 )

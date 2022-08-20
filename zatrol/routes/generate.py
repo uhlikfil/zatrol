@@ -7,7 +7,7 @@ from zatrol.model.api_schema import ErrorDTO
 from zatrol.services.generate import GenerateSvc
 
 router = InferringRouter(
-    prefix="/api/generate",
+    prefix="/generate",
     tags=["generate"],
     responses={status.HTTP_404_NOT_FOUND: {"model": ErrorDTO}},
 )

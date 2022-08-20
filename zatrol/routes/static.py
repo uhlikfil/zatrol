@@ -1,9 +1,14 @@
-from flask import Blueprint, render_template
+from fastapi import APIRouter
+from fastapi.responses import FileResponse, HTMLResponse
 
-blueprint = Blueprint("static", __name__, url_prefix="/")
+from zatrol.settings import Settings
+
+router = APIRouter(tags=["ui"], default_response_class=HTMLResponse)
 
 
-@blueprint.route("/", defaults={"path": ""})
-@blueprint.route("/<path>")
-def serve(path):
-    return render_template("index.html")
+@router.route("/")
+@router.route("/generate")
+@router.route("/quote")
+@router.route("/summoner")
+def serve(_):
+    return FileResponse(Settings.path.UI_BUILD / "index.html")

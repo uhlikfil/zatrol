@@ -4,7 +4,7 @@ from fastapi_restful.inferring_router import InferringRouter
 from zatrol.model.region import Region
 from zatrol.services import champion as champion_svc
 
-router = InferringRouter(prefix="/api/metadata", tags=["metadata"])
+router = InferringRouter(prefix="/metadata", tags=["metadata"])
 
 
 @router.get("/region", status_code=status.HTTP_200_OK)

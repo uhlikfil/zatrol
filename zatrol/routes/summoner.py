@@ -7,15 +7,15 @@ from zatrol.model.api_schema import ErrorDTO, SummonerDTO
 from zatrol.services import match_history
 from zatrol.services.summoner import SummonerSvc
 
-router = InferringRouter(prefix="/api/summoner", tags=["summoner"])
+router = InferringRouter(prefix="/summoner", tags=["summoner"])
 
 
-@router.get("/", responses={status.HTTP_404_NOT_FOUND: {"model": ErrorDTO}})
+@router.get("", responses={status.HTTP_404_NOT_FOUND: {"model": ErrorDTO}})
 async def get(svc: SummonerSvc = Depends()) -> list[SummonerDTO]:
     return await svc.get_all()
 
 
-@router.post("/", status_code=status.HTTP_204_NO_CONTENT)
+@router.post("", status_code=status.HTTP_204_NO_CONTENT)
 async def post(
     summoner: SummonerDTO,
     tasks: BackgroundTasks,

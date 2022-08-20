@@ -12,6 +12,7 @@ from zatrol.routes import generate, metadata, quote, summoner
 from zatrol.services import champion as champ_svc
 from zatrol.services import match_history as match_history_svc
 from zatrol.services import riot_client
+from zatrol.settings import Settings
 
 logger = logging.getLogger("uvicorn")
 
@@ -20,13 +21,29 @@ def create_app() -> FastAPI:
     app = FastAPI(
         title="Zatrol",
         docs_url="/api/docs",
+        redoc_url="/api/redoc",
         responses={status.HTTP_422_UNPROCESSABLE_ENTITY: {"model": ErrorDTO}},
     )
 
-    if os.getenv("SERVE_UI"):
+    add_timing_middleware(app, logger.info)
+    app.add_event_handler("startup", init_logging)
+    app.add_exception_handler(RequestValidationError, exc.handle_validation_error)
+
+    # order matters
+    for initable in (db_connection, riot_client, champ_svc, match_history_svc):
+        initable.init(app)
+
+    for route in (metadata, quote, summoner, generate):
+        app.include_router(route.router, prefix="/api")
+
+    if Settings.config.SERVE_UI:
+        from fastapi.staticfiles import StaticFiles
+
         from zatrol.routes import static
 
-        # TODO
+        static_files = StaticFiles(directory=Settings.path.UI_BUILD)
+        app.include_router(static.router)
+        app.mount("/", static_files, name="UI static files")
     else:  # the UI will be running on a different port, CORS is needed
         from fastapi.middleware.cors import CORSMiddleware
 
@@ -36,16 +53,6 @@ def create_app() -> FastAPI:
             allow_methods=["*"],
             allow_headers=["*"],
         )
-
-    add_timing_middleware(app, logger.info)
-    app.add_event_handler("startup", init_logging)
-    app.add_exception_handler(RequestValidationError, exc.handle_validation_error)
-
-    for initable in (db_connection, riot_client, champ_svc, match_history_svc):
-        initable.init(app)
-
-    for route in (metadata, quote, summoner, generate):
-        app.include_router(route.router)
 
     return app
 

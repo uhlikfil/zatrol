@@ -29,7 +29,7 @@ const Generate = () => {
     return (
       <div className="container p-6">
         <div className="notification is-warning">
-          Select a Summoner in order to generate Zatrol images
+          Select a Summoner to generate Zatrol images
         </div>
       </div>
     )

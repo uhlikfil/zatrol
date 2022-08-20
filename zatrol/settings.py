@@ -24,11 +24,15 @@ class Const(BaseSettings):
 
 class Path(BaseSettings):
     RESOURCES: pathlib.Path = "./resources"
-    UI_BUILD: str = "../zatrol-ui/build"
+    UI_BUILD: pathlib.Path = "./zatrol-ui/build"
 
 
 class Riot(BaseSettings):
     API_KEY: str = "<key>"
+
+
+class Config(BaseSettings):
+    SERVE_UI: int = 1
 
 
 class Settings:
@@ -36,3 +40,4 @@ class Settings:
     const = Const()
     path = Path()
     riot = Riot()
+    config = Config()
