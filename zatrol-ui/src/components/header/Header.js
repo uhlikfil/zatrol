@@ -15,7 +15,7 @@ const Header = () => {
   const name = (summoner) =>
     summoner == null
       ? "Pick a summoner!"
-      : `${summoner.summoner_name} #${summoner.region}`
+      : `${summoner.summonerName} #${summoner.region}`
 
   return (
     <section className={`hero ${summonerColor(summoner)}`}>
@@ -35,11 +35,11 @@ const Header = () => {
               >
                 <Link to="/generate">Generate Image</Link>
               </li>
-              <li className={isActive("/regquote/*") ? "is-active" : ""}>
-                <Link to="regquote">Register Quotes</Link>
+              <li className={isActive("/quote/*") ? "is-active" : ""}>
+                <Link to="/quote">Register Quotes</Link>
               </li>
-              <li className={isActive("/regsumm/*") ? "is-active" : ""}>
-                <Link to="/regsumm">Register Summoner</Link>
+              <li className={isActive("/summoner/*") ? "is-active" : ""}>
+                <Link to="/summoner">Register Summoner</Link>
               </li>
             </ul>
           </div>

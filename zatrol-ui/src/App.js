@@ -20,8 +20,8 @@ const RoutedViews = () =>
   useRoutes([
     { path: "/", element: <Generate /> },
     { path: "/generate", element: <Generate /> },
-    { path: "/regquote", element: <RegisterQuote /> },
-    { path: "/regsumm", element: <RegisterSummoner /> },
+    { path: "/quote", element: <RegisterQuote /> },
+    { path: "/summoner", element: <RegisterSummoner /> },
   ])
 
 const App = () => {

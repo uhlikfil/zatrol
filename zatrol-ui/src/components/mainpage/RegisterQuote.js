@@ -89,7 +89,7 @@ const RegisterQuote = () => {
       await postQuote(summoner.puuid, quoteText, selectedChampions)
       resultRef.current.success()
     } catch (exception) {
-      resultRef.current.error(exception.message)
+      resultRef.current.error(exception)
     }
   }
 
@@ -105,7 +105,7 @@ const RegisterQuote = () => {
               placeholder={
                 summoner == null
                   ? "Select a summoner first"
-                  : `${summoner.summoner_name} always says...`
+                  : `${summoner.summonerName} always says...`
               }
               value={quoteText}
               onChange={(event) => setQuoteText(event.target.value)}

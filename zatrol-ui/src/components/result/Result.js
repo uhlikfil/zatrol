@@ -1,22 +1,22 @@
-import React, { forwardRef, useImperativeHandle, useState } from "react"
+import { forwardRef, useImperativeHandle, useState } from "react"
 
 const STATE = Object.freeze({
-  READY: 0,
+  IDLE: 0,
   LOADING: 1,
   SUCCESS: 2,
   ERROR: 3,
 })
 
 const Result = forwardRef((_, ref) => {
-  const [state, setState] = useState(STATE.READY)
+  const [state, setState] = useState(STATE.IDLE)
   const [errorMsg, setErrorMsg] = useState("")
 
   useImperativeHandle(ref, () => ({
-    ready: () => setState(STATE.READY),
+    ready: () => setState(STATE.IDLE),
     loading: () => setState(STATE.LOADING),
     success: () => {
       setState(STATE.SUCCESS)
-      setTimeout(() => setState(STATE.READY), 5000)
+      setTimeout(() => setState(STATE.IDLE), 5000)
     },
     error: (message) => {
       setState(STATE.ERROR)
@@ -40,7 +40,7 @@ const Result = forwardRef((_, ref) => {
 
   const color = () => {
     switch (state) {
-      case STATE.READY:
+      case STATE.IDLE:
       case STATE.LOADING:
         return "is-info"
       case STATE.SUCCESS:
@@ -50,7 +50,7 @@ const Result = forwardRef((_, ref) => {
     }
   }
 
-  if (state == STATE.READY) return null
+  if (state == STATE.IDLE) return null
   return (
     <section className="hero">
       <div className="hero-body has-text-centered">{contents()}</div>

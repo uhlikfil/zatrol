@@ -1,7 +1,9 @@
-sqlalchemy
-psycopg2-binary
-pydantic
+fastapi
+fastapi-restful
+uvicorn
+sqlalchemy[asyncio]
+sqlalchemy2-stubs
+asyncpg
 pillow
 riotwatcher
-flask
-flask-cors
+requests

@@ -1,6 +1,6 @@
 import { generate } from "api/zatrol-api"
 import { SummonerContext } from "context/SummonerContext"
-import React, { useContext } from "react"
+import { useContext } from "react"
 import { useQuery, useQueryClient } from "react-query"
 import { summonerColor } from "utils/color-styles"
 
@@ -10,7 +10,7 @@ const Generate = () => {
   const queryClient = useQueryClient()
 
   const {
-    data: imgBase64,
+    data: imgData,
     error,
     isLoading,
     isError,
@@ -20,7 +20,7 @@ const Generate = () => {
       if (summoner == null) return
 
       const resp = await generate(summoner.puuid)
-      return resp.image
+      return URL.createObjectURL(resp)
     },
     { staleTime: Infinity, retry: 1 }
   )
@@ -29,7 +29,7 @@ const Generate = () => {
     return (
       <div className="container p-6">
         <div className="notification is-warning">
-          Select a Summoner in order to generate Zatrol images
+          Select a Summoner to generate Zatrol images
         </div>
       </div>
     )
@@ -46,7 +46,7 @@ const Generate = () => {
   if (isError) {
     return (
       <div className="container p-6">
-        <div className="notification is-danger">{error.message}</div>
+        <div className="notification is-danger">{error.detail}</div>
       </div>
     )
   }
@@ -57,10 +57,7 @@ const Generate = () => {
       <div className="column mx-3">
         <div style={{ maxWidth: "800px", margin: "auto" }}>
           <figure className="image">
-            <img
-              src={`data:image/png;base64,${imgBase64}`}
-              alt={`${summoner.summoner_name} memed`}
-            />
+            <img src={imgData} alt={`${summoner.summonerName} memed`} />
           </figure>
         </div>
       </div>

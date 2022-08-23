@@ -21,26 +21,29 @@ RUN python ./setup.py bdist_wheel --dist-dir /dist
 ### RUN ###
 FROM python:3.9-slim-buster
 
-ENV DATABASE_URL=
-ENV RIOT_API_KEY=
-ENV CHAMPIONS_INTERVAL_H=
-ENV MATCH_HISTORY_INTERVAL_H=
-ENV ASSETS_DIR=
-ENV PORT=
-ENV SERVE_UI=
-ENV UI_BUILD_DIR=
+ENV DB_HOST=
+ENV DB_PORT=
+ENV DB_NAME=
+ENV DB_USER=
+ENV DB_PASS=
+ENV API_KEY=
+ENV CHAMPS_INTERVAL_H=
+ENV HISTORY_INTERVAL_H=
+ENV RESOURCES_DIR=/resources
+ENV UI_BUILD_DIR=/zatrol-ui/build
+ENV SERVE_UI=1
 
 WORKDIR /app
 
 # copy build artifacts
-COPY assets /assets
+COPY resources /resources
 COPY --from=UI_BUILD /zatrol-ui/build /zatrol-ui/build
 COPY --from=BE_BUILD /dist ./app_wheels
 
 # install the app
 RUN pip install --upgrade pip setuptools
 RUN pip install ./app_wheels/*
-RUN pip install gunicorn
+RUN pip install uvicorn
 
 # run the app
-CMD gunicorn "zatrol:wsgi()"
+CMD uvicorn --factory "zatrol:create_app" --host 0.0.0.0 --port 80

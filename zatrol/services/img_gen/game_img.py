@@ -3,14 +3,18 @@ import io
 from PIL import Image, ImageDraw, ImageFont
 from PIL.ImageFont import FreeTypeFont
 
-from zatrol.api import riot_api
-from zatrol.config import Config
+from zatrol.services import riot_client
+from zatrol.settings import Settings
 
 
 def create_img(
-    champion_key: int, kills: int, deaths: int, assists: int, won: bool
+    champion_key: int,
+    kills: int,
+    deaths: int,
+    assists: int,
+    won: bool,
 ) -> bytes:
-    champ_icon = Image.open(io.BytesIO(riot_api.get_champion_icon(champion_key)))
+    champ_icon = Image.open(io.BytesIO(riot_client.get_champion_icon(champion_key)))
     bg_w, bg_h, border_size = _bg_size(champ_icon)
     bg_img = Image.new("RGB", (bg_w, bg_h), color="#272a30")
     bg_img.paste(champ_icon, (border_size, border_size))
@@ -47,10 +51,10 @@ def _bg_size(img: Image) -> tuple[int, int, int]:
 
 
 def _font(font_name: str, wanted_height: int) -> FreeTypeFont:
-    ASSETS = Config.services.assets_dir
+    font_path = str(Settings.path.RESOURCES / "fonts" / font_name)
 
     for i in range(1, 256):
-        font = ImageFont.truetype(f"{ASSETS}/fonts/{font_name}", i)
+        font = ImageFont.truetype(font_path, i)
         height = font.getsize("Test string 123/45")[1]
         if height == wanted_height:
             return font

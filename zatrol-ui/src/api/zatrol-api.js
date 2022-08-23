@@ -3,7 +3,7 @@ const DEV_PORT = 8000
 const BASE_URL =
   process.env.NODE_ENV == "production" ? "/api" : `${DEV_HOST}:${DEV_PORT}/api`
 
-async function get(pathname, query) {
+async function get(pathname, query, asBinary = false) {
   const opts = {
     method: "GET",
     headers: { "Content-Type": "application/json" },
@@ -13,11 +13,11 @@ async function get(pathname, query) {
   if (query) url += "?" + new URLSearchParams(query)
 
   const response = await fetch(url, opts)
-  if (response.status == 500) throw new Error("Unexpected server error!")
-  const json = await response.json()
-  console.log(`< GET ${url.toString()} : `, json)
-  if (!response.ok) throw new Error(json.error)
-  return json
+  if (response.status == 500) throw "Unexpected server error!"
+  if (!response.ok) throw (await response.json()).detail
+  const data = await (asBinary ? response.blob() : response.json())
+  console.log(`< GET ${url.toString()} : `, data)
+  return data
 }
 
 async function post(pathname, body, query) {
@@ -32,10 +32,10 @@ async function post(pathname, body, query) {
 
   console.log(`> POST: ${url.toString()} :`, opts.body.substring(0, 80))
   const response = await fetch(url, opts)
-  if (response.status == 500) throw new Error("Unexpected server error!")
+  if (response.status == 500) throw "Unexpected server error!"
   const json = response.status == 204 ? true : await response.json()
   console.log(`< POST ${url.toString()} : `, json)
-  if (!response.ok) throw new Error(json.error)
+  if (!response.ok) throw json.detail
   return json
 }
 
@@ -51,14 +51,14 @@ export async function getSummoners() {
   return await get("/summoner")
 }
 
-export async function postSummoner(region, summoner_name) {
-  return await post("/summoner", { region, summoner_name })
+export async function postSummoner(region, summonerName) {
+  return await post("/summoner", { region, summonerName })
 }
 
-export async function postQuote(puuid, text, champ_restrictions) {
-  return await post("/quote", { puuid, text, champ_restrictions })
+export async function postQuote(puuid, text, champRestrictions) {
+  return await post("/quote", { puuid, text, champRestrictions })
 }
 
 export async function generate(puuid) {
-  return await get(`/generate/${puuid}`)
+  return await get(`/generate/${puuid}`, null, true)
 }
