@@ -43,7 +43,6 @@ COPY --from=BE_BUILD /dist ./app_wheels
 # install the app
 RUN pip install --upgrade pip setuptools
 RUN pip install ./app_wheels/*
-RUN pip install uvicorn
 
 # run the app
 CMD uvicorn --factory "zatrol:create_app" --host 0.0.0.0 --port 80
