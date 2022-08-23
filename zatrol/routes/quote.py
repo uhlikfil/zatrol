@@ -20,7 +20,7 @@ class QuoteView:
     async def get(self, puuid: str) -> list[QuoteDTO]:
         return await self.svc.get_all(puuid)
 
-    @router.post("/", status_code=status.HTTP_204_NO_CONTENT)
+    @router.post("/")
     async def post(self, quote: QuoteDTO) -> int:
         champs = quote.champ_restrictions or []
         return await self.svc.insert_quote(quote.puuid, quote.text, champs)

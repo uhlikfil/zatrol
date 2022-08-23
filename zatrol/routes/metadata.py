@@ -7,11 +7,11 @@ from zatrol.services import champion as champion_svc
 router = InferringRouter(prefix="/metadata", tags=["metadata"])
 
 
-@router.get("/region", status_code=status.HTTP_200_OK)
+@router.get("/region")
 def get_region() -> list[str]:
     return [reg.value for reg in Region]
 
 
-@router.get("/champion", status_code=status.HTTP_200_OK)
+@router.get("/champion")
 def get_champion() -> list[str]:
     return champion_svc.get_champions()

@@ -32,7 +32,7 @@ class Riot(BaseSettings):
 
 
 class Config(BaseSettings):
-    SERVE_UI: int = 1
+    SERVE_UI: int = 0
 
 
 class Settings:
