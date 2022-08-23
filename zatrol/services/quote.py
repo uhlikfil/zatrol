@@ -19,10 +19,10 @@ class QuoteSvc:
 
     async def insert_quote(
         self, puuid: str, text: str, champ_restrictions: list[str]
-    ) -> None:
+    ) -> int:
         champions = champion_svc.validate_champions(champ_restrictions)
         try:
-            await self.dao.create(puuid, text, champions)
+            return await self.dao.create(puuid, text, champions)
         except IntegrityError as error:
             print(error)
             raise NotFound(f"Summoner {puuid} not found")

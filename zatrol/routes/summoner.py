@@ -14,17 +14,17 @@ router = InferringRouter(prefix="/summoner", tags=["summoner"])
 class SummonerView:
     svc: SummonerSvc = Depends()
 
-    @router.get("", responses={status.HTTP_404_NOT_FOUND: {"model": ErrorDTO}})
+    @router.get("/", responses={status.HTTP_404_NOT_FOUND: {"model": ErrorDTO}})
     async def get(self) -> list[SummonerDTO]:
         return await self.svc.get_all()
 
-    @router.post("", status_code=status.HTTP_204_NO_CONTENT)
+    @router.post("/")
     async def post(
         self,
         summoner: SummonerDTO,
         tasks: BackgroundTasks,
         game_dao: GameDAO = Depends(),
-    ):
+    ) -> str:
         puuid = await self.svc.insert_summoner(summoner.region, summoner.summoner_name)
         tasks.add_task(
             match_history.process_summoner,
@@ -32,3 +32,4 @@ class SummonerView:
             game_dao,
             await self.svc.dao.get(puuid),
         )
+        return puuid

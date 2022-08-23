@@ -48,15 +48,15 @@ export async function getChampions() {
 }
 
 export async function getSummoners() {
-  return await get("/summoner")
+  return await get("/summoner/")
 }
 
 export async function postSummoner(region, summonerName) {
-  return await post("/summoner", { region, summonerName })
+  return await post("/summoner/", { region, summonerName })
 }
 
 export async function postQuote(puuid, text, champRestrictions) {
-  return await post("/quote", { puuid, text, champRestrictions })
+  return await post("/quote/", { puuid, text, champRestrictions })
 }
 
 export async function generate(puuid) {
