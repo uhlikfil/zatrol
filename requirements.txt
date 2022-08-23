@@ -6,4 +6,4 @@ sqlalchemy2-stubs
 asyncpg
 pillow
 riotwatcher
-httpx
+requests
