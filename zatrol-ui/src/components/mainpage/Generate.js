@@ -46,7 +46,7 @@ const Generate = () => {
   if (isError) {
     return (
       <div className="container p-6">
-        <div className="notification is-danger">{error.detail}</div>
+        <div className="notification is-danger">{error}</div>
       </div>
     )
   }
