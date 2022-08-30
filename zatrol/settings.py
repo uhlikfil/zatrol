@@ -5,14 +5,23 @@ from pydantic.env_settings import BaseSettings
 
 class Database(BaseSettings):
     DB_HOST: str = "localhost"
-    DB_PORT: int = 5432
+    DB_PORT: str = "5432"
     DB_NAME: str = "zatrol"
     DB_USER: str = "postgres"
     DB_PASS: str = "root"
 
+    DATABASE_URL: str = None
+
     @property
     def DB_URI(self):
-        return f"postgresql+asyncpg://{self.DB_USER}:{self.DB_PASS}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
+        DEFAULT_DRIVER = "postgres"
+        DRIVER = "postgresql+asyncpg"
+
+        if not self.DATABASE_URL:
+            self.DATABASE_URL = f"{DRIVER}://{self.DB_USER}:{self.DB_PASS}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
+        elif self.DATABASE_URL.startswith(f"{DEFAULT_DRIVER}://"):
+            self.DATABASE_URL = self.DATABASE_URL.replace(DEFAULT_DRIVER, DRIVER, 1)
+        return self.DATABASE_URL
 
 
 class Const(BaseSettings):

@@ -21,16 +21,14 @@ RUN python ./setup.py bdist_wheel --dist-dir /dist
 ### RUN ###
 FROM python:3.9-slim-buster
 
-ENV DB_HOST=
-ENV DB_PORT=
-ENV DB_NAME=
-ENV DB_USER=
-ENV DB_PASS=
+EXPOSE 8080
+
+ENV DATABASE_URL=
 ENV API_KEY=
 ENV CHAMPS_INTERVAL_H=
 ENV HISTORY_INTERVAL_H=
-ENV RESOURCES_DIR=/resources
-ENV UI_BUILD_DIR=/zatrol-ui/build
+ENV RESOURCES=/resources
+ENV UI_BUILD=/zatrol-ui/build
 ENV SERVE_UI=1
 
 WORKDIR /app
@@ -45,4 +43,4 @@ RUN pip install --upgrade pip setuptools
 RUN pip install ./app_wheels/*
 
 # run the app
-CMD uvicorn --factory "zatrol:create_app" --host 0.0.0.0 --port 80
+CMD uvicorn --factory "zatrol:create_app" --host 0.0.0.0 --port 8080

@@ -1,7 +1,10 @@
+_dev
 .venv
 .vscode
 .env
+README.md
 
 **/__pycache__
 **/node_modules
 **/build
+**/.pretierrc.json
